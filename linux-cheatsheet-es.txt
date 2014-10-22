@@ -1,0 +1,682 @@
+# ==============================================================================
+#                     Comandos útiles y notas sobre Linux
+#
+# Nota: Todos los comandos de este documento sólo se han probado en Bash
+# ==============================================================================
+#
+#
+# Introducción
+# ============
+#
+# - Ejemplo de asignación de variable:
+#       x="hello world"
+#
+# - Ejemplo de uso de variable:
+#       echo $x
+#
+# - El carácter '`' (acento grave) permite ejecutar comandos dentro de
+#   expresiones. Ejemplos:
+#
+#       echo `pwd`
+#       => /tmp/foo/bar
+#
+#       x="`pwd`"
+#
+# - El carácter '$' permite ejecutar comandos y manipular las variables de tipo
+#   cadena de caracteres para usos diversos, como obtener la longitud de la
+#   cadena, subcadenas, buscar y reemplazar cadenas, concatenar cadenas, etc.
+#
+#       echo $(pwd)
+#       => /tmp/foo/bar
+#
+#       echo "$(pwd)ABC"
+#       => /tmp/foo/barABC
+#
+#       Concatenación de cadenas: string1${var}string2
+#           bar="bar"
+#           echo "foo${bar}foo"
+#           => foobarfoo
+#
+#       Longitud de cadena: ${var#}
+#           x="hello world"
+#           echo "${#x}"
+#           => 11
+#
+#       Subcadenas: ${var:offset:length}
+#           x="hello world"
+#           echo "${x:1:4}"
+#           => ello
+#
+#       Reemplazamiento: ${var//pattern/string}
+#           x="hello world"
+#           echo "${x//world/people}"
+#           => hello people
+#
+# - Las comillas simples y dobles no son equivalentes. Con comillas dobles
+#   algunos caracteres se interpretan como caracteres especiales:
+#       $, `, {, }, +, (, ).
+#   Esto permite evaluar variables y ejecutar comandos dentro de una expresión:
+#
+#       echo "$x"
+#       => hello world
+#
+#       echo "`pwd`"
+#       => /tmp/foo/bar
+#
+#   Con comillas simples todos los caracteres se interpretan como literales:
+#
+#       echo '$x'
+#       => $x
+#
+#       echo '`pwd`'
+#       => `pwd`
+#
+#
+# Información y configuración del sistema
+# =======================================
+#
+# Versión del kernel:
+#     uname -a
+#
+# Parámetros de configuración del kernel:
+#     sysctl -a
+#
+# Info de la distribución:
+#     lsb_release -a
+# O bien:
+#     cat /etc/issue
+#
+# Info de la CPU:
+#     lscpu
+# O bien:
+#     cat /proc/cpuinfo
+#
+# Mostrar número de núcleos de procesador disponibles:
+#     nproc
+#
+# Info del hardware:
+#     sudo lshw
+#
+# Info de la memoria:
+#     sudo dmidecode --type memory
+#
+# Info de la batería (incluido temperatura)
+#     acpi -V
+#
+# Info de dispositivos PCI:
+#     lspci
+#
+# Info de memoria ocupada:
+#     free -mt
+#
+# Info de memoria ocupada (en detalle):
+#     cat /proc/meminfo
+#
+# Info de la tarjeta gráfica:
+#     sudo lshw -C video
+#
+# Info sobre voltajes, temperaturas y velocidad de ventiladores:
+#     sensors
+#
+# Límites de uso de recursos por parte del usuario:
+#     ulimit -a
+#
+# Mostrar los modos de rendimiento disponibles del procesador:
+#     cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_governors
+#
+# Mostrar el modo actual de rendimiento del procesador:
+#     cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+# Para cambiar el modo del procesador de forma permanente hay que modificar el
+# archivo:
+#     /etc/sysfs.conf
+# Y añadir la línea:
+#     devices/system/cpu/cpu0/cpufreq/scaling_governor=<modo_cpu>
+# Previamente hay que tener instalado el paquete "sysfsutils".
+#
+# Info de los dispositivos de red instalados:
+#     iwconfig
+#
+# Escanear redes con el dispositivo wifi "eth_n" (para n = 0, 1, 2, ...):
+#     iwlist <eth_n> scan
+#
+# Apagar la antena wifi:
+#     sudo iwconfig <eth_n> txpower off
+#
+# Comprobar el rendimiento de la tarjeta gráfica:
+#     glxgears -printfps
+#
+# Configuración del color (RGB):
+#     xgamma
+#
+#
+# Administración del sistema
+# ==========================
+#
+# Convertirse en root modificando el entorno (environment):
+#     sudo -i  # `logout` o `<CTRL> + D` para dejar de serlo
+#
+# Convertirse en root SIN modificar el entorno (environment):
+#     sudo -s  # `logout` o `<CTRL> + D` para dejar de serlo
+#
+# Iniciar sesión como otro usuario:
+#     sudo su <username>
+#
+# Ejecutar un comando como otro usuario:
+#     sudo -u <username> <command>
+#
+# Forzar reinicio de Linux (para casos extremos):
+#     <ALT> + <IMPR. PANTALLA> + escribir REISUB
+#
+# Reiniciar las X:
+#     <ALT> + <CTRL> + retroceso
+# O bien:
+#     <ALT> + <IMPR. PANTALLA> + K
+#
+# Mostrar todos los manuales donde aparezca la palabra "crontab":
+#     man -k crontab
+# Si hay varios manuales que se llaman "crontab", mostrar aquel con
+# identificador igual a 5:
+#     man 5 crontab
+#
+# Mostrar la ayuda de Bash:
+#     help [<command>]
+#
+# Buscar un comando en el historial de bash:
+#     <CTRL> + R            # avanzar
+#     <CTRL> + <SHIFT> + R  # retroceder
+#
+# Mostrar el estado de los servicios del sistema:
+#     service --status-all
+#
+# Activar un servicio:
+#     sudo service <daemon_name> start
+#
+# Desactivar un servicio:
+#     sudo service <daemon_name> stop
+#
+# Instalar un servicio en el arranque:
+#     sudo update-rc.d <daemon_name> defaults
+#
+# Desinstalar un servicio del arranque:
+#     sudo update-rc.d -f <daemon_name> remove
+#
+# Mostrar todos los enlaces dinámicos del sistema:
+#     ldconfig -v | less
+#
+# Interfaces gráficas para gestionar servicios del sistema:
+#     bum (gtk)
+#     rcconf (consola)
+#
+# Cambiarse al directorio en que se estaba antes:
+#     cd -
+# Ejemplo:
+#     pwd
+#     => /tmp/foo/
+#
+#     cd ../bar && pwd && cd -
+#     => /tmp/bar/
+#     => /tmp/foo/
+#
+#     pwd
+#     => /tmp/foo/
+#
+# Pasar la salida de un programa como argumentos a otro programa:
+#     <programa1> | xargs <programa2>
+#
+#     Ejemplo:
+#         cat dirs.txt
+#         =>
+#         dir1
+#         dir2
+#         dir3
+#
+#         cat dirs.txt | xargs mkdir
+#
+#         ls
+#         => dir1  dir2  dir3  dirs.txt
+#
+#     Ejemplo (nombres con espacios en blanco):
+#         cat dirs.txt
+#         =>
+#         dir 1
+#         dir 2
+#         dir 3
+#
+#         sed "s/\ /\\\ /g" dirs.txt | xargs mkdir
+#
+#         ls
+#         => dir 1  dir 2  dir 3  dirs.txt
+#
+#     Por defecto se toma como separador el salto de línea (\n). Algunos
+#     programas (como `find`) permiten modificar la salida para usar como
+#     separador el carácter nulo (\0).
+#
+#     Ejemplo: Eliminar los directorios vacíos encontrados con find.
+#
+#         find -type d -iname 'dir*' -print0 | xargs -0 rmdir
+#
+#     Con `-print0` se sustituye el carácter "fin de línea" (\n) por el
+#     carácter "null" (\0). En este caso la opción "-0" de xargs indica
+#     que en la entrada se usa el carácter "null" para el fin de línea, y
+#     también sirve para que los caracteres '"' y '\' no se traten como
+#     caracteres especiales.
+#
+#
+# Procesos
+# ========
+#
+# Mostrar todos los procesos:
+#     ps -ef
+#
+# Mostrar todos los procesos con información ampliada (CPU, MEM, etc):
+#     ps -aux
+#
+# Mostrar los procesos en forma de árbol:
+#     pstree
+#
+# Matar el proceso:
+#     kill <pid_del_proceso>
+#
+# Obligar al kernel a matar el proceso:
+#     kill -9 <pid_del_proceso>
+#
+# Matar un proceso a partir del nombre:
+#     killall <nombre_proceso>
+#
+#
+# Permisos
+# ========
+#
+# Dar permisos de ejecución a un archivo:
+#     chmod u+x <file>
+#
+# Cambiar los permisos del contenido de un directorio recursivamente:
+#     sudo chmod 755 -R <path>
+#
+# Cambiar el propietario del contenido de un directorio recursivamente:
+#     sudo chown -R <username> <path>
+#
+# Cambiar el propietario y grupo del contenido de un directorio recursivamente:
+#     sudo chown -R <username>:<groupname> <path>
+#
+# Mantener el mismo grupo del directorio en toda la jerarquía de archivos y
+# directorios que se creen dentro:
+#     chmod g+s <path>
+#
+# Comprobar si un usuario existe en el sistema:
+#     egrep -i '^<username>' /etc/passwd
+#
+# Comprobar si un grupo existe en el sistema:
+#     egrep -i '^<groupname>' /etc/group
+#
+# Crear un grupo:
+#     sudo groupadd <groupname>
+#
+# Añadir un usuario a un grupo:
+#    sudo gpasswd -a <username> <groupname>
+# O bien:
+#    sudo usermod -a -G <groupname> <username>
+#
+# Permitir que un usuario normal pueda manejar un servicio del sistema:
+#     Abrir el archivo "sudoers" con `sudo visudo` y añadir:
+#         <username>        ALL=/etc/init.d/<service_name>
+#
+#
+# Archivos y directorios
+# ======================
+#
+# Mostrar la ruta actual:
+#     pwd
+#
+# Mostrar la ruta al directorio padre de la ruta actual:
+#     dirname "`pwd`"
+#
+# Mostrar el nombre del directorio de la ruta actual:
+#     basename "`pwd`"
+#
+# Ver el contenido de un directorio:
+#     ls <path>
+# O bien:
+#     l <path>
+# Nota: Con `l` los directorios, binarios y enlaces se muestran en otro formato.
+#
+# Ver el contenido de un directorio en detalle (sin archivos ni directorios
+# ocultos):
+#     ls -l <path>
+# Nota: Con la opción `-h` muestra el tamaño en un formato más legible (KB,
+# MB, GB).
+#
+# Ver el contenido de un directorio en detalle (con archivos y directorios
+# ocultos):
+#     ls -la <path>
+# O bien:
+#     ll <path>
+# Nota: Con `ll` los directorios, binarios y enlaces se muestran en otro formato.
+#
+# Ver el tamaño de un directorio:
+#     du -sh <path>
+#
+# Copiar un archivo en la misma ruta de origen añadiendo un sufijo al nombre:
+#     cp <path>{,sufix}
+# Ejemplo:
+#     cp tmp/file.txt{,.tmp}
+#     ls tmp
+#     => file.txt file.txt.tmp
+#
+# Buscar archivos por nombre usando la base de datos del sistema:
+#     locate <filename>
+# Nota: Probablemente no funcionará con archivos creados recientemente, ya que
+# Linux no habrá tenido tiempo de actualizar la base de datos del sistema (lo
+# cual se hace con una tarea cron diariamente).
+#
+# Buscar archivos y directorios mediante una expresión regular:
+#     find <path> '<pattern>'
+#
+#     En `find` las opciones se van aplicando como una sucesión de filtros, por
+#     lo que el orden de las opciones es importante.
+#
+#     Con la opción `-iname` busca sin sensibilidad a mayúsculas:
+#         find <path> -iname '<pattern>'
+#
+#     Con la opción `-not` busca lo contrario:
+#         find <path> -not -iname '<pattern>'
+#
+#     Con la opción `-type f` busca sólo archivos:
+#         find <path> -type f -iname '<pattern>'
+#
+#     Con la opción `-type d` busca sólo directorios:
+#         find <path> -type d -iname '<pattern>'
+#
+#     Buscar por propietario y grupo:
+#         find <path> -user '<user_name>'
+#         find <path> -group '<group_name>'
+#
+#     Buscar enlaces duros:
+#         find <path> -type f -links <n>
+#     donde <n> puede ser:
+#         n: exactamente n links,
+#         +n: más de n links,
+#         -n: menos de n links.
+#
+#     Buscar y eliminar archivos:
+#         find <path> -type f -iname '<pattern>' -delete
+#     Nota importante:
+#     ¡La opción `-delete` hay que ponerla siempre al final! ¡Si se pusiera al
+#     principio iría eliminando TODOS los archivos y directorios que fuera
+#     encontrando!
+#
+# Comprimir en gzip:
+#     gzip -c <in_file> > <out_file>
+#
+# Descomprimir gzip:
+#     gunzip -c <in_file> > <out_file>
+#
+# Comprimir en zip:
+#     zip -r <zip_name> <file_or_directory>
+#
+# Descomprimir zip:
+#     unzip <zip_file> -d <output_dir>
+#
+# Comprimir en tar.gz:
+#     tar -zcvf <filename.tar.gz> <filename>
+#
+# Descomprimir tar.gz (manteniendo los permisos):
+#     tar -zxpf <filename.tgz>
+#
+# Empaquetar en tar:
+#     tar -cvf <filename.tar> <filename>
+#
+# Desempaquetar tar:
+#     tar -xpf <filename.tar>
+#
+# Crear enlace simbólico:
+#     ln -s <origin_path> <linkname>
+#
+# Crear enlace duro:
+# ln <origin_path> <linkname>
+#
+#
+# Archivos de texto
+# =================
+#
+# Buscar las ocurrencias de `keyword`:
+#     grep '<keyword>' <file>
+#
+# Buscar las ocurrencias que NO contengan `keyword`:
+#     grep -v '<keyword>' <file>
+#
+# Buscar sin distinguir mayúsculas/minúsculas:
+#     grep -i '<keyword>' <file>
+#
+# Buscar las ocurrencias que contengan `keyword1` o `keyword2`:
+#     egrep '<keyword1>|<keyword2>' <file>
+# Nota: `egrep` es equivalente a `grep -E`.
+# Con `-E` (de "Extended mode") indicamos a grep que use el símbolo "|" como
+# un operador, evitando tener que escaparlo. Lo mismo ocurre con el resto de
+# meta-caracteres: {, }, (, ), ?, +.
+#
+# Buscar las ocurrencias que comienzan por `keyword1` o `keyword2`:
+#     egrep '^(keyword1|keyword2)' <file>
+#
+# Buscar las ocurrencias que terminan por `keyword1` o `keyword2`:
+#     egrep '(keyword1|keyword2)$' <file>
+#
+# Buscar una palabra clave en un texto imprimiendo sólo las apariciones de la
+# palabra clave (sin el contexto):
+#     grep -o '<keyword>' <file>
+#
+# Buscar texto leyendo el patrón desde un archivo:
+#     grep -f <patterns_file> <file>
+#
+# Buscar texto en archivos de un directorio recursivamente:
+#     rgrep '<pattern>' <path>
+#
+# Mostrar el contenido de un archivo conforme se va modificando:
+#     tail -f <path>
+#
+# Mostrar las últimas 20 líneas de un archivo:
+#     tail -n 20 <path>
+#
+# Buscar expresion regular en un archivo abierto con less (también sirve en man,
+# ya que está basado en less):
+#     /<pattern>
+# A continuación pulsar `n` para saltar a la siguiente ocurrencia o `shift + n`
+# para saltar hacia atrás.
+#
+# Sustituir todas las ocurrencias de "my_path" por el resultado de `pwd` en
+# todos los archivos con extensión ".txt" de un directorio:
+#     p="`pwd`"
+#     p="${p//\//\\/}"  # escapa todas las barras
+#     sed -i "s/my_path/$p/g" *.txt
+#
+# Sustituir todas las ocurrencias de "my_path" por el resultado de `pwd`
+# recursivamente (-R) en todos los archivos con extensión ".txt" (-x) de un
+# directorio, sin cambiar las fechas de modificación (-d):
+#     rpl -Rd -x'.txt' 'my_path' "`pwd`" <dir_path>
+# Nota: Es necesario tener instalado el paquete "rpl".
+#
+# Filtrar columnas de un texto tabulado con espacios o tabuladores:
+#     awk '{print $<column_number>}' <file>
+# Ejemplo: mostrar el PID de todos los procesos del usuario "sergio":
+#     ps -ef | grep sergio | awk '{print $2}'
+#     =>
+#     3134
+#     3145
+#     ...
+#
+# Filtrar columnas de un texto tabulado usando un delimitador específico:
+#     cut -d <delimiter> -f <column_number> <file>
+# Ejemplo: mostrar sólo la primera columna (columnas separadas por un espacio):
+#     cut -d ' ' -f 1 <file>
+#
+# Eliminar líneas repetidas:
+#     uniq <file>
+#
+# Concatenar dos archivos línea a línea usando un delimitador:
+#     paste -d '=' list1.txt list2.txt
+#
+# Generar archivo diff a partir de las diferencias entre todos los archivos de
+# dos directorios:
+#     diff -ur <old_directory> <new_directory> > changes.diff
+#
+# Ver diferencias entre archivos en color:
+#     colordiff <file1> <file2>
+# Nota: Es necesario tener instalado el paquete "colordiff".
+#
+# Aplicar parche a los archivos de un directorio a partir de un archivo diff:
+#     patch -p1 -N -d <old_directory> < changes.diff
+#
+# Redirección de archivos. Descriptores básicos del sistema:
+#
+#     0 standard input
+#     1 standard output
+#     2 standard error
+#
+#     Ejemplo:
+#         ./my_script.sh > /dev/null 2>&1
+#
+#     El carácter '&' sirve para identificar a "1" como un descriptor de archivo
+#     (en este caso la salida estándar). En esa línea, "my_script.sh" se está
+#     redirigiendo a "/dev/null" y los errores (stderr) a la salida
+#     estándar (stdout).
+#
+#     Ejemplo:
+#         ./my_script.sh 2> errors.log
+#
+#     Ahora sólo se están redirigiendo los errores a "errors.log".
+#
+#
+# Redes / Internet
+# ================
+#
+# Información de dispositivos de red instalados:
+#     ip addr
+#
+# Información de tablas de enrutamiento:
+#     ip route
+#
+# Conexión SSH por puerto estándar:
+#     ssh <username>@<host>
+#
+# Conexión SSH por puerto específico:
+#     ssh -p <port> <username>@<host>
+#
+# Reiniciar servidor SSH:
+#     sudo service ssh restart
+#
+# Copiar archivos desde el host local a un host remoto:
+#     scp <origin_file> <username>@<host>:<destination_file>
+#
+# Copiar archivo desde un host remoto al host local:
+#     scp <username>@<host>:<origin_file> <destination_file>
+#
+# Copiar archivo desde local a remoto usando certificado (pem):
+#     scp -i <pem_file> <origin_file> <username>@<host>:<destination_file>
+#
+# Copiar directorio desde local a remoto:
+#     scp -r <origin_dir> <username>@<host>:<destination_dir>
+#
+# Descargar archivo desde una URL:
+#     wget <URL>
+#
+# Continuar descarga:
+#     wget -c <URL>
+#
+# Descargar archivos a partir de un txt:
+#     wget -i <list.txt>
+#
+# Descargar página e imprimir por salida estándar (-O -) en modo "quiet" (-q,
+# sin imprimir mensajes de wget).
+# Nota: En wget el símbolo '-' identifica a la salida estándar.
+#     wget -q -O - <URL>
+# Aunque normalmente se escribe como:
+#     wget -qO- <URL>
+#
+# Descargar una web completa:
+#     wget --recursive --no-parent --page-requisites --user-agent Mozilla <URL>
+#
+# Mostrar en qué puerto está escuchando un servicio:
+#     netstat -a | grep <service>
+#
+# Mostrar qué servicio está escuchando en un puerto:
+#     lsof -i :<port>
+#
+# Comprobar intentos de entrada denegados por DenyHosts:
+#     cat /etc/hosts.deny
+#
+#
+# Instalación/desinstalación/compilación/vinculación de programas
+# ===============================================================
+#
+# Instalación desde código fuente:
+#     ./configure [--prefix=<path>]
+#     make
+#     sudo make install
+# También se podría usar "checkinstall" para crear un paquete y evitar
+# compilación en una futura instalación.
+#
+# Instalación de paquetes:
+#     sudo dpkg -i <package>
+#
+# Instalación de dependencias de paquetes rotos:
+#     sudo aptitude install -f
+#
+# Desinstalar un programa instalado desde código fuente:
+#     ./configure && make && sudo make install
+# Hay que abrir el directorio del código fuente desde donde se instaló y hacer:
+#     sudo make uninstall
+# Y para limpiar residuos:
+#     make clean
+# Nota: Puede que el programa no disponga de desinstalación.
+#
+# Mostrar dependencias de bibliotecas compartidas en ejecutable con
+# vinculación dinámica:
+#     ldd <binfile>
+#
+#
+# Varios
+# ======
+#
+# Dividir un archivo MP3 en trozos a partir de un archivo CUE:
+#     mp3splt -c <input_file>.cue -d <dir_output> <input_file>.mp3
+#
+# Calendario:
+#     cal
+#
+# Fecha:
+#     date
+# Se pueden usar varios formatos:
+#     date +%F
+#     => 2014-09-15
+#
+#     date +%Y%m%d
+#     => 20140915
+#
+#     date +%y%m%d
+#     => 140915
+#
+# Tabla de símbolos ASCII:
+#     man ascii
+#
+# Crear un volcado hexadecimal de un archivo o salida estándar:
+#     xxd <filename>
+#
+# Crear una imagen ISO de DVD:
+#     dd if=/dev/dvd of=<dir_path>/<image.iso>
+#
+# Crear una imagen ISO 9660 a partir de un directorio:
+#     genisoimage -r -J -o <image.iso> <dir_path>
+#
+# Imprimir una secuencia de números:
+#     seq <first> <increment> <last>
+# Ejemplos:
+#     echo `seq 10`
+#     =>
+#     1 2 3 4 5 6 7 8 9 10
+#
+#     echo `seq 0 10`
+#     =>
+#     0 1 2 3 4 5 6 7 8 9 10
+#
+#     echo `seq 0 2 10`
+#     => 0 2 4 6 8 10
