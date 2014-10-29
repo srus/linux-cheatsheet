@@ -44,8 +44,10 @@
 #
 #       Subcadenas: ${var:offset:length}
 #           x="hello world"
-#           echo "${x:1:4}"
-#           => ello
+#           echo "${x:1:6}"
+#           => ello w
+#           echo "${x:0:-3}"
+#           => hello wo
 #
 #       Reemplazamiento: ${var//pattern/string}
 #           x="hello world"
