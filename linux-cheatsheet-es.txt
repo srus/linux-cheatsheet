@@ -646,20 +646,21 @@
 # Dividir un archivo MP3 en trozos a partir de un archivo CUE:
 #     mp3splt -c <input_file>.cue -d <dir_output> <input_file>.mp3
 #
-# Calendario:
+# Ver calendario:
 #     cal
 #
-# Fecha:
+# Ver fecha:
 #     date
-# Se pueden usar varios formatos:
-#     date +%F
-#     => 2014-09-15
 #
-#     date +%Y%m%d
-#     => 20140915
+#     Se pueden usar varios formatos:
+#         date +%F
+#         => 2014-09-15
 #
-#     date +%y%m%d
-#     => 140915
+#         date +%Y%m%d
+#         => 20140915
+#
+#         date +%y%m%d
+#         => 140915
 #
 # Tabla de símbolos ASCII:
 #     man ascii
@@ -686,3 +687,10 @@
 #
 #     echo `seq 0 2 10`
 #     => 0 2 4 6 8 10
+#
+# Saltar a cualquier directorio del sistema:
+#     z <dirname>
+#
+#     Nota: Requiere que el usuario haya accedido a ese directorio en el pasado
+#           con el comando `cd`.
+#     Web: https://github.com/rupa/z
