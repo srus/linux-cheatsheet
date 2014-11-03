@@ -353,7 +353,11 @@
 #     ls -la <path>
 # O bien:
 #     ll <path>
-# Nota: Con `ll` los directorios, binarios y enlaces se muestran en otro formato.
+# Nota: Con `ll` los directorios, binarios y enlaces se muestran en otro
+# formato.
+#
+# Ver el contenido de un directorio en forma de árbol:
+#     tree -L <deep_level>
 #
 # Ver el tamaño de un directorio:
 #     du -sh <path>
