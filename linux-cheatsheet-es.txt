@@ -209,7 +209,7 @@
 #     bum (gtk)
 #     rcconf (consola)
 #
-# Cambiarse al directorio en que se estaba antes:
+# Moverse al directorio en que se estaba antes:
 #     cd -
 # Ejemplo:
 #     pwd
@@ -221,6 +221,9 @@
 #
 #     pwd
 #     => /tmp/foo/
+#
+# Moverse al directorio $HOME:
+# cd
 #
 # Pasar la salida de un programa como argumentos a otro programa:
 #     <programa1> | xargs <programa2>
@@ -610,6 +613,9 @@
 # Comprobar intentos de entrada denegados por DenyHosts:
 #     cat /etc/hosts.deny
 #
+# Mostrar la ruta que sigue un paquete por la red hasta llegar a un servidor:
+#     traceroute <hostname>
+# Nota: es necesario instalar el paquete "traceroute".
 #
 # Instalación/desinstalación/compilación/vinculación de programas
 # ===============================================================
