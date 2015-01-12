@@ -114,6 +114,9 @@
 # Info de memoria ocupada (en detalle):
 #     cat /proc/meminfo
 #
+# Info sobre dispositivos y espacio ocupado en el sistema de archivos:
+#     df
+#
 # Info de la tarjeta gráfica:
 #     sudo lshw -C video
 #
@@ -265,6 +268,10 @@
 #     que en la entrada se usa el carácter "null" para el fin de línea, y
 #     también sirve para que los caracteres '"' y '\' no se traten como
 #     caracteres especiales.
+#
+# Comprobar y reparar el sistema de archivos. Es necesario realizar esta
+# operación desde un live CD:
+#     fsck -V <ruta_a_dispositivo>
 #
 #
 # Procesos
@@ -616,6 +623,9 @@
 # Mostrar la ruta que sigue un paquete por la red hasta llegar a un servidor:
 #     traceroute <hostname>
 # Nota: es necesario instalar el paquete "traceroute".
+#
+# Mostrar información de servidores DNS:
+#     dig <URL>
 #
 # Instalación/desinstalación/compilación/vinculación de programas
 # ===============================================================
