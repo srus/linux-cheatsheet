@@ -295,6 +295,11 @@
 # Matar un proceso a partir del nombre:
 #     killall <nombre_proceso>
 #
+# Matar el cliente gráfico (servidor X) de un proceso:
+#     xkill
+# Nota: Esta utilidad sólo cierra la conexión con el servidor X, lo que provoca
+# que la mayoría de programas se cierren también, aunque algunos pueden no
+# cerrarse (ver `man xkill`).
 #
 # Permisos
 # ========
@@ -624,8 +629,14 @@
 #     traceroute <hostname>
 # Nota: es necesario instalar el paquete "traceroute".
 #
-# Mostrar información de servidores DNS:
+# Consultar a los servidores DNS información sobre un dominio:
 #     dig <URL>
+#
+# Mostrar la traza para resolver un dominio:
+#     dig +trace <URL>
+#
+# Consultar a los servidores DNS el dominio asociado a una IP:
+#     dig -x <IP>
 #
 # Instalación/desinstalación/compilación/vinculación de programas
 # ===============================================================
