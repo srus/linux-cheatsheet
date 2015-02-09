@@ -12,12 +12,12 @@
 #       x="hello world"
 #
 # - Ejemplo de uso de variable:
-#       echo $x
+#       echo "$x"
 #
 # - El carácter '`' (acento grave) permite ejecutar comandos dentro de
 #   expresiones. Ejemplos:
 #
-#       echo `pwd`
+#       echo "`pwd`"
 #       => /tmp/foo/bar
 #
 #       x="`pwd`"
@@ -26,7 +26,7 @@
 #   cadena de caracteres para usos diversos, como obtener la longitud de la
 #   cadena, subcadenas, buscar y reemplazar cadenas, concatenar cadenas, etc.
 #
-#       echo $(pwd)
+#       echo "$(pwd)"
 #       => /tmp/foo/bar
 #
 #       echo "$(pwd)ABC"
@@ -704,15 +704,15 @@
 # Imprimir una secuencia de números:
 #     seq <first> <increment> <last>
 # Ejemplos:
-#     echo `seq 10`
+#     echo "`seq 10`"
 #     =>
 #     1 2 3 4 5 6 7 8 9 10
 #
-#     echo `seq 0 10`
+#     echo "`seq 0 10`"
 #     =>
 #     0 1 2 3 4 5 6 7 8 9 10
 #
-#     echo `seq 0 2 10`
+#     echo "`seq 0 2 10`"
 #     => 0 2 4 6 8 10
 #
 # Saltar a cualquier directorio del sistema:
