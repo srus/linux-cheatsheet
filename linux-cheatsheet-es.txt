@@ -85,11 +85,10 @@
 #   para tratar las variables no definidas como un error, evitando errores
 #   silenciosos. Otra opción que puede ser útil es `set -e`, para interrumpir la
 #   ejecución del script cuando algún comando devuelva un valor distinto de 0
-#   (en Bash el 0 se evalúa como true y el resto como false). El problema es que
-#   puede haber comandos que de forma intencionada devuelvan un valor distinto
-#   de 0. Por ello es recomendable evitar el uso de `set -e` y realizar las
-#   comprobaciones de errores manualmente por cada comando, por ejemplo
-#   siguiendo este patrón:
+#   (error). El problema es que puede haber comandos que de forma intencionada
+#   devuelvan un valor distinto de 0. Por ello es recomendable evitar el uso de
+#   `set -e` y realizar las comprobaciones de errores manualmente por cada
+#   comando, por ejemplo siguiendo este patrón:
 #
 #       comando || { echo "error"; exit 1; }
 #
