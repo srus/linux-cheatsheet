@@ -473,8 +473,10 @@
 #     ln -s <origin_path> <linkname>
 #
 # Crear enlace duro:
-# ln <origin_path> <linkname>
+#     ln <origin_path> <linkname>
 #
+# Eliminar archivo de forma segura:
+#     shred -u -z -n 20
 #
 # Archivos de texto
 # =================
@@ -661,6 +663,13 @@
 # Consultar a los servidores DNS el dominio asociado a una IP:
 #     dig -x <IP>
 #
+# Otra herramienta para consultar información de servidores DNS:
+#     host <URL>
+#
+# Capturar tráfico de paquetes TCP:
+#     sudo tcpdump -A -vvvv -s 9999 -i <interface> port <port> > tcp.log
+#
+#
 # Instalación/desinstalación/compilación/vinculación de programas
 # ===============================================================
 #
@@ -696,10 +705,13 @@
 # Dividir un archivo MP3 en trozos a partir de un archivo CUE:
 #     mp3splt -c <input_file>.cue -d <dir_output> <input_file>.mp3
 #
-# Ver calendario:
+# Calculadora:
+#     bc
+#
+# Calendario:
 #     cal
 #
-# Ver fecha:
+# Fecha actual:
 #     date
 #
 #     Se pueden usar varios formatos:
@@ -744,3 +756,10 @@
 #     Nota: Requiere que el usuario haya accedido a ese directorio en el pasado
 #           con el comando `cd`.
 #     Web: https://github.com/rupa/z
+#
+# Copiar en el portapapeles el contenido de un archivo:
+#     xclip -sel clip < <file>
+#
+#  Crear una pareja de claves pública/privada RSA con OpenSSH:
+#     ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
+#
