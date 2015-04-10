@@ -1,8 +1,8 @@
-# ==============================================================================
+# =============================================================================
 #                     Comandos útiles y notas sobre Linux
 #
 # Nota: Todos los comandos de este documento sólo se han probado en Bash
-# ==============================================================================
+# =============================================================================
 #
 #
 # Notas sobre Bash
@@ -83,12 +83,12 @@
 # - El comando `set` permite configurar opciones de la shell. Por ejemplo, es
 #   recomendable añadir al comienzo del script la opción `set -u`, que sirve
 #   para tratar las variables no definidas como un error, evitando errores
-#   silenciosos. Otra opción que puede ser útil es `set -e`, para interrumpir la
-#   ejecución del script cuando algún comando devuelva un valor distinto de 0
-#   (error). El problema es que puede haber comandos que de forma intencionada
-#   devuelvan un valor distinto de 0. Por ello es recomendable evitar el uso de
-#   `set -e` y realizar las comprobaciones de errores manualmente por cada
-#   comando, por ejemplo siguiendo este patrón:
+#   silenciosos. Otra opción que puede ser útil es `set -e`, para interrumpir
+#   la ejecución del script cuando algún comando devuelva un valor distinto de
+#   0 (error). El problema es que puede haber comandos que de forma
+#   intencionada devuelvan un valor distinto de 0. Por ello es recomendable
+#   evitar el uso de `set -e` y realizar las comprobaciones de errores
+#   manualmente por cada comando, por ejemplo siguiendo este patrón:
 #
 #       comando || { echo "error"; exit 1; }
 #
@@ -374,7 +374,8 @@
 #     ls <path>
 # O bien:
 #     l <path>
-# Nota: Con `l` los directorios, binarios y enlaces se muestran en otro formato.
+# Nota: Con `l` los directorios, binarios y enlaces se muestran en otro
+# formato.
 #
 # Ver el contenido de un directorio en detalle (sin archivos ni directorios
 # ocultos):
@@ -519,8 +520,8 @@
 # Mostrar las últimas 20 líneas de un archivo:
 #     tail -n 20 <path>
 #
-# Buscar expresion regular en un archivo abierto con less (también sirve en man,
-# ya que está basado en less):
+# Buscar expresion regular en un archivo abierto con less (también sirve en
+# man, ya que está basado en less):
 #     /<pattern>
 # A continuación pulsar `n` para saltar a la siguiente ocurrencia o `shift + n`
 # para saltar hacia atrás.
@@ -581,9 +582,9 @@
 #     Ejemplo:
 #         ./my_script.sh > /dev/null 2>&1
 #
-#     El carácter '&' sirve para identificar a "1" como un descriptor de archivo
-#     (en este caso la salida estándar). En esa línea, "my_script.sh" se está
-#     redirigiendo a "/dev/null" y los errores (stderr) a la salida
+#     El carácter '&' sirve para identificar a "1" como un descriptor de
+#     archivo (en este caso la salida estándar). En esa línea, "my_script.sh"
+#     se está redirigiendo a "/dev/null" y los errores (stderr) a la salida
 #     estándar (stdout).
 #
 #     Ejemplo:
@@ -753,9 +754,9 @@
 # Saltar a cualquier directorio del sistema:
 #     z <dirname>
 #
+#     Web: https://github.com/rupa/z
 #     Nota: Requiere que el usuario haya accedido a ese directorio en el pasado
 #           con el comando `cd`.
-#     Web: https://github.com/rupa/z
 #
 # Copiar en el portapapeles el contenido de un archivo:
 #     xclip -sel clip < <file>
