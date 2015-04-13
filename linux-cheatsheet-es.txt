@@ -176,11 +176,14 @@
 # Administración del sistema
 # ==========================
 #
+#  Ver qué usuarios han iniciado sesión y qué están haciendo:
+#     w
+#
 # Convertirse en root modificando el entorno (environment):
-#     sudo -i  # `logout` o `<CTRL> + D` para dejar de serlo
+#     sudo -i  # `logout` para dejar de serlo
 #
 # Convertirse en root SIN modificar el entorno (environment):
-#     sudo -s  # `logout` o `<CTRL> + D` para dejar de serlo
+#     sudo -s  # `logout` para dejar de serlo
 #
 # Iniciar sesión como otro usuario:
 #     sudo su <username>
@@ -300,25 +303,53 @@
 #     ps -ef
 #
 # Mostrar todos los procesos con información ampliada (CPU, MEM, etc):
-#     ps -aux
+#     ps aux
+#
+# Mostrar procesos en ejecución de un comando:
+#     ps u -C <command>
 #
 # Mostrar los procesos en forma de árbol:
 #     pstree
 #
-# Matar el proceso:
-#     kill <pid_del_proceso>
+# Detener (pausar) el proceso actual:
+#     <CTRL> + Z
 #
-# Obligar al kernel a matar el proceso:
-#     kill -9 <pid_del_proceso>
+# Reactivar el último proceso detenido:
+#     fg
+#
+# Detener un proceso cualquiera:
+#     kill -STOP <pid>
+#
+# Mostrar procesos detenidos:
+#     jobs
+#
+# Reactivar un proceso cualquiera:
+#     kill -CONT <pid>
+#
+# Terminar un proceso (por defecto `kill` realiza esta acción):
+#     kill [-TERM] <pid>
+#
+# Matar un proceso:
+#     kill -KILL <pid>
 #
 # Matar un proceso a partir del nombre:
 #     killall <nombre_proceso>
+#
+# Parar los procesos zombies hijos de un proceso:
+#     kill -CHLD <pid_padre>
 #
 # Matar el cliente gráfico (servidor X) de un proceso:
 #     xkill
 # Nota: Esta utilidad sólo cierra la conexión con el servidor X, lo que provoca
 # que la mayoría de programas se cierren también, aunque algunos pueden no
 # cerrarse (ver `man xkill`).
+#
+# Ejecutar comando inmune a señal SIGHUP (logout). Útil para ejecutar comando
+# en background en servidor remoto. Por defecto la salida estándar se
+# redirecciona a `./nohup.out` o `$HOME/nohup.out`:
+#     nohup <command> >> <output> &
+# Alternativas similares a este programa: tmux y screen.
+#
 #
 # Permisos
 # ========
@@ -345,8 +376,17 @@
 # Comprobar si un grupo existe en el sistema:
 #     egrep -i '^<groupname>' /etc/group
 #
-# Crear un grupo:
+# Añadir un usuario:
+#     sudo adduser <username>
+#
+# Añadir un grupo:
 #     sudo groupadd <groupname>
+#
+# Eliminar un usuario:
+#     sudo deluser <username>
+#
+# Eliminar un grupo:
+#     sudo delgroup <groupname>
 #
 # Añadir un usuario a un grupo:
 #    sudo gpasswd -a <username> <groupname>
@@ -565,6 +605,9 @@
 # Generar archivo diff a partir de las diferencias entre todos los archivos de
 # dos directorios:
 #     diff -ur <old_directory> <new_directory> > changes.diff
+#
+# Ver diferencias entre archivos:
+#     comm -12 <file1> <file2>
 #
 # Ver diferencias entre archivos en color:
 #     colordiff <file1> <file2>
