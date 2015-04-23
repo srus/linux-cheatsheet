@@ -360,11 +360,40 @@
 # Cambiar los permisos del contenido de un directorio recursivamente:
 #     sudo chmod 755 -R <path>
 #
-# Cambiar el propietario del contenido de un directorio recursivamente:
-#     sudo chown -R <username> <path>
+# Cambiar el propietario del contenido de un directorio. Con "-R" para hacerlo
+# recursivamente:
+#     sudo chown [-R] <username> <path>
+#
+# Cambiar el grupo del contenido de un directorio. Con "-R" para hacerlo
+# recursivamente:
+#     sudo chown [-R] :<groupname> <path>
 #
 # Cambiar el propietario y grupo del contenido de un directorio recursivamente:
-#     sudo chown -R <username>:<groupname> <path>
+# Con "-R" para hacerlo recursivamente:
+#     sudo chown [-R] <username>:<groupname> <path>
+#
+# Hacer que un usuario (con permiso de ejecución) herede temporalmente los
+# privilegios del propietario de un archivo ejecutable:
+#     chmod u+s <path>
+#
+# Hacer que un usuario (con permiso de ejecución) herede temporalmente los
+# privilegios del grupo de un archivo ejecutable:
+#     chmod g+s <path>
+# Ejemplo:
+#     Queremos que todos los usuarios puedan ejecutar el comando "foobar"
+#     (ficticio). Supongamos que este ejecutable tiene permiso de ejecución
+#     para todos los usuarios, pero dado que necesita acceder a un archivo de
+#     configuración del sistema (foobar.conf), sólo el usuario "root" tiene
+#     privilegios suficientes para hacerlo. Solución:
+#         - Crear el grupo "foobar".
+#         - Cambiar el grupo de dicho archivo de configuración:
+#               sudo chown :foobar <path>/foobar.conf
+#         - Cambiar el grupo del ejecutable:
+#               sudo chown :foobar <path>/foobar
+#         - Cambiar el bit SGID del ejecutable:
+#               sudo chmod g+s <path>/foobar
+#    A partir de ahora cualquier usuario que ejecute "foobar" heredará los
+#    privilegios del grupo "foobar", y con ello podrá acceder a "foobar.conf".
 #
 # Mantener el mismo grupo del directorio en toda la jerarquía de archivos y
 # directorios que se creen dentro:
@@ -693,6 +722,25 @@
 #
 # Comprobar intentos de entrada denegados por DenyHosts:
 #     cat /etc/hosts.deny
+# Es necesario instalar paquete "denyhosts".
+#
+# Activar cortafuegos:
+#     sudo ufw enable
+#
+# Desactivar cortafuegos:
+#     sudo ufw disable
+#
+# Ver estado del cortafuegos:
+#     sudo ufw status verbose
+#
+# Cambiar la políticas por defecto del cortafuegos para permitir todas las
+# conexiones entrantes (por defecto se permiten sólo conexiones salientes):
+#     sudo ufw default allow incoming
+#
+# Limitar en el cortafuegos el número de intentos de entrada fallidos vía SSH.
+# Esto rechaza cualquier IP que realice >= 6 intentos de entrada fallidos en
+# los últimos 30 s:
+#      sudo ufw limit ssh
 #
 # Mostrar la ruta que sigue un paquete por la red hasta llegar a un servidor:
 #     traceroute <hostname>
@@ -807,3 +855,5 @@
 #  Crear una pareja de claves pública/privada RSA con OpenSSH:
 #     ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
 #
+# Enviar un email:
+#     echo "cuerpo del mensaje" | mail -s "asunto" <email_address>
