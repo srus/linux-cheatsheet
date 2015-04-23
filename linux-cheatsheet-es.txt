@@ -885,3 +885,8 @@
 #
 # Imprimir con formato:
 #     printf "My username is: $LOGNAME\nMy personal directory is: $HOME\n"
+#
+# Ejecutar un script desde consola o importarlo (como el #include de C) desde
+# un script. También se puede usar '.' en lugar de `source`:
+#     source <script>
+
