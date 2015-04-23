@@ -1,8 +1,8 @@
-# ==============================================================================
+# =============================================================================
 #                     Comandos útiles y notas sobre Linux
 #
 # Nota: Todos los comandos de este documento sólo se han probado en Bash
-# ==============================================================================
+# =============================================================================
 #
 #
 # Notas sobre Bash
@@ -91,13 +91,12 @@
 # - El comando `set` permite configurar opciones de la shell. Por ejemplo, es
 #   recomendable añadir al comienzo del script la opción `set -u`, que sirve
 #   para tratar las variables no definidas como un error, evitando errores
-#   silenciosos. Otra opción que puede ser útil es `set -e`, para interrumpir la
-#   ejecución del script cuando algún comando devuelva un valor distinto de 0
-#   (en Bash el 0 se evalúa como true y el resto como false). El problema es que
-#   puede haber comandos que de forma intencionada devuelvan un valor distinto
-#   de 0. Por ello es recomendable evitar el uso de `set -e` y realizar las
-#   comprobaciones de errores manualmente por cada comando, por ejemplo
-#   siguiendo este patrón:
+#   silenciosos. Otra opción que puede ser útil es `set -e`, para interrumpir
+#   la ejecución del script cuando algún comando devuelva un valor distinto de
+#   0 (error). El problema es que puede haber comandos que de forma
+#   intencionada devuelvan un valor distinto de 0. Por ello es recomendable
+#   evitar el uso de `set -e` y realizar las comprobaciones de errores
+#   manualmente por cada comando, por ejemplo siguiendo este patrón:
 #
 #       comando || { echo "error"; exit 1; }
 #
@@ -185,11 +184,14 @@
 # Administración del sistema
 # ==========================
 #
+#  Ver qué usuarios han iniciado sesión y qué están haciendo:
+#     w
+#
 # Convertirse en root modificando el entorno (environment):
-#     sudo -i  # `logout` o `<CTRL> + D` para dejar de serlo
+#     sudo -i  # `logout` para dejar de serlo
 #
 # Convertirse en root SIN modificar el entorno (environment):
-#     sudo -s  # `logout` o `<CTRL> + D` para dejar de serlo
+#     sudo -s  # `logout` para dejar de serlo
 #
 # Iniciar sesión como otro usuario:
 #     sudo su <username>
@@ -309,25 +311,53 @@
 #     ps -ef
 #
 # Mostrar todos los procesos con información ampliada (CPU, MEM, etc):
-#     ps -aux
+#     ps aux
+#
+# Mostrar procesos en ejecución de un comando:
+#     ps u -C <command>
 #
 # Mostrar los procesos en forma de árbol:
 #     pstree
 #
-# Matar el proceso:
-#     kill <pid_del_proceso>
+# Detener (pausar) el proceso actual:
+#     <CTRL> + Z
 #
-# Obligar al kernel a matar el proceso:
-#     kill -9 <pid_del_proceso>
+# Reactivar el último proceso detenido:
+#     fg
+#
+# Detener un proceso cualquiera:
+#     kill -STOP <pid>
+#
+# Mostrar procesos detenidos:
+#     jobs
+#
+# Reactivar un proceso cualquiera:
+#     kill -CONT <pid>
+#
+# Terminar un proceso (por defecto `kill` realiza esta acción):
+#     kill [-TERM] <pid>
+#
+# Matar un proceso:
+#     kill -KILL <pid>
 #
 # Matar un proceso a partir del nombre:
 #     killall <nombre_proceso>
+#
+# Parar los procesos zombies hijos de un proceso:
+#     kill -CHLD <pid_padre>
 #
 # Matar el cliente gráfico (servidor X) de un proceso:
 #     xkill
 # Nota: Esta utilidad sólo cierra la conexión con el servidor X, lo que provoca
 # que la mayoría de programas se cierren también, aunque algunos pueden no
 # cerrarse (ver `man xkill`).
+#
+# Ejecutar comando inmune a señal SIGHUP (logout). Útil para ejecutar comando
+# en background en servidor remoto. Por defecto la salida estándar se
+# redirecciona a `./nohup.out` o `$HOME/nohup.out`:
+#     nohup <command> >> <output> &
+# Alternativas similares a este programa: tmux y screen.
+#
 #
 # Permisos
 # ========
@@ -338,11 +368,40 @@
 # Cambiar los permisos del contenido de un directorio recursivamente:
 #     sudo chmod 755 -R <path>
 #
-# Cambiar el propietario del contenido de un directorio recursivamente:
-#     sudo chown -R <username> <path>
+# Cambiar el propietario del contenido de un directorio. Con "-R" para hacerlo
+# recursivamente:
+#     sudo chown [-R] <username> <path>
+#
+# Cambiar el grupo del contenido de un directorio. Con "-R" para hacerlo
+# recursivamente:
+#     sudo chown [-R] :<groupname> <path>
 #
 # Cambiar el propietario y grupo del contenido de un directorio recursivamente:
-#     sudo chown -R <username>:<groupname> <path>
+# Con "-R" para hacerlo recursivamente:
+#     sudo chown [-R] <username>:<groupname> <path>
+#
+# Hacer que un usuario (con permiso de ejecución) herede temporalmente los
+# privilegios del propietario de un archivo ejecutable:
+#     chmod u+s <path>
+#
+# Hacer que un usuario (con permiso de ejecución) herede temporalmente los
+# privilegios del grupo de un archivo ejecutable:
+#     chmod g+s <path>
+# Ejemplo:
+#     Queremos que todos los usuarios puedan ejecutar el comando "foobar"
+#     (ficticio). Supongamos que este ejecutable tiene permiso de ejecución
+#     para todos los usuarios, pero dado que necesita acceder a un archivo de
+#     configuración del sistema (foobar.conf), sólo el usuario "root" tiene
+#     privilegios suficientes para hacerlo. Solución:
+#         - Crear el grupo "foobar".
+#         - Cambiar el grupo de dicho archivo de configuración:
+#               sudo chown :foobar <path>/foobar.conf
+#         - Cambiar el grupo del ejecutable:
+#               sudo chown :foobar <path>/foobar
+#         - Cambiar el bit SGID del ejecutable:
+#               sudo chmod g+s <path>/foobar
+#    A partir de ahora cualquier usuario que ejecute "foobar" heredará los
+#    privilegios del grupo "foobar", y con ello podrá acceder a "foobar.conf".
 #
 # Mantener el mismo grupo del directorio en toda la jerarquía de archivos y
 # directorios que se creen dentro:
@@ -354,8 +413,17 @@
 # Comprobar si un grupo existe en el sistema:
 #     egrep -i '^<groupname>' /etc/group
 #
-# Crear un grupo:
+# Añadir un usuario:
+#     sudo adduser <username>
+#
+# Añadir un grupo:
 #     sudo groupadd <groupname>
+#
+# Eliminar un usuario:
+#     sudo deluser <username>
+#
+# Eliminar un grupo:
+#     sudo delgroup <groupname>
 #
 # Añadir un usuario a un grupo:
 #    sudo gpasswd -a <username> <groupname>
@@ -383,7 +451,8 @@
 #     ls <path>
 # O bien:
 #     l <path>
-# Nota: Con `l` los directorios, binarios y enlaces se muestran en otro formato.
+# Nota: Con `l` los directorios, binarios y enlaces se muestran en otro
+# formato.
 #
 # Ver el contenido de un directorio en detalle (sin archivos ni directorios
 # ocultos):
@@ -482,8 +551,10 @@
 #     ln -s <origin_path> <linkname>
 #
 # Crear enlace duro:
-# ln <origin_path> <linkname>
+#     ln <origin_path> <linkname>
 #
+# Eliminar archivo de forma segura:
+#     shred -u -z -n 20
 #
 # Archivos de texto
 # =================
@@ -526,8 +597,8 @@
 # Mostrar las últimas 20 líneas de un archivo:
 #     tail -n 20 <path>
 #
-# Buscar expresion regular en un archivo abierto con less (también sirve en man,
-# ya que está basado en less):
+# Buscar expresion regular en un archivo abierto con less (también sirve en
+# man, ya que está basado en less):
 #     /<pattern>
 # A continuación pulsar `n` para saltar a la siguiente ocurrencia o `shift + n`
 # para saltar hacia atrás.
@@ -558,6 +629,10 @@
 # Ejemplo: mostrar sólo la primera columna (columnas separadas por un espacio):
 #     cut -d ' ' -f 1 <file>
 #
+# Eliminar caracteres:
+#     echo "ab123" | tr -d 'abc'
+#     => 123
+#
 # Eliminar líneas repetidas:
 #     uniq <file>
 #
@@ -567,6 +642,9 @@
 # Generar archivo diff a partir de las diferencias entre todos los archivos de
 # dos directorios:
 #     diff -ur <old_directory> <new_directory> > changes.diff
+#
+# Ver diferencias entre archivos:
+#     comm -12 <file1> <file2>
 #
 # Ver diferencias entre archivos en color:
 #     colordiff <file1> <file2>
@@ -584,9 +662,9 @@
 #     Ejemplo:
 #         ./my_script.sh > /dev/null 2>&1
 #
-#     El carácter '&' sirve para identificar a "1" como un descriptor de archivo
-#     (en este caso la salida estándar). En esa línea, "my_script.sh" se está
-#     redirigiendo a "/dev/null" y los errores (stderr) a la salida
+#     El carácter '&' sirve para identificar a "1" como un descriptor de
+#     archivo (en este caso la salida estándar). En esa línea, "my_script.sh"
+#     se está redirigiendo a "/dev/null" y los errores (stderr) a la salida
 #     estándar (stdout).
 #
 #     Ejemplo:
@@ -656,6 +734,25 @@
 #
 # Comprobar intentos de entrada denegados por DenyHosts:
 #     cat /etc/hosts.deny
+# Es necesario instalar paquete "denyhosts".
+#
+# Activar cortafuegos:
+#     sudo ufw enable
+#
+# Desactivar cortafuegos:
+#     sudo ufw disable
+#
+# Ver estado del cortafuegos:
+#     sudo ufw status verbose
+#
+# Cambiar la políticas por defecto del cortafuegos para permitir todas las
+# conexiones entrantes (por defecto se permiten sólo conexiones salientes):
+#     sudo ufw default allow incoming
+#
+# Limitar en el cortafuegos el número de intentos de entrada fallidos vía SSH.
+# Esto rechaza cualquier IP que realice >= 6 intentos de entrada fallidos en
+# los últimos 30 s:
+#      sudo ufw limit ssh
 #
 # Mostrar la ruta que sigue un paquete por la red hasta llegar a un servidor:
 #     traceroute <hostname>
@@ -669,6 +766,13 @@
 #
 # Consultar a los servidores DNS el dominio asociado a una IP:
 #     dig -x <IP>
+#
+# Otra herramienta para consultar información de servidores DNS:
+#     host <URL>
+#
+# Capturar tráfico de paquetes TCP:
+#     sudo tcpdump -A -vvvv -s 9999 -i <interface> port <port> > tcp.log
+#
 #
 # Instalación/desinstalación/compilación/vinculación de programas
 # ===============================================================
@@ -705,10 +809,13 @@
 # Dividir un archivo MP3 en trozos a partir de un archivo CUE:
 #     mp3splt -c <input_file>.cue -d <dir_output> <input_file>.mp3
 #
-# Ver calendario:
+# Calculadora:
+#     bc
+#
+# Calendario:
 #     cal
 #
-# Ver fecha:
+# Fecha actual:
 #     date
 #
 #     Se pueden usar varios formatos:
@@ -754,6 +861,15 @@
 # Saltar a cualquier directorio del sistema:
 #     z <dirname>
 #
+#     Web: https://github.com/rupa/z
 #     Nota: Requiere que el usuario haya accedido a ese directorio en el pasado
 #           con el comando `cd`.
-#     Web: https://github.com/rupa/z
+#
+# Copiar en el portapapeles el contenido de un archivo:
+#     xclip -sel clip < <file>
+#
+#  Crear una pareja de claves pública/privada RSA con OpenSSH:
+#     ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
+#
+# Enviar un email:
+#     echo "cuerpo del mensaje" | mail -s "asunto" <email_address>
