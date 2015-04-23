@@ -548,6 +548,15 @@
 # Eliminar archivo de forma segura:
 #     shred -u -z -n 20
 #
+# Comprobar si un archivo es un archivo regular (devuelve 0 en caso de éxito ó
+# 1 en caso contrario):
+#     test -f <file>
+#
+# Comprobar si un archivo es un directorio (devuelve 0 en caso de éxito ó 1 en
+# caso contrario):
+#     test -d <file>
+#
+#
 # Archivos de texto
 # =================
 #
@@ -857,3 +866,6 @@
 #
 # Enviar un email:
 #     echo "cuerpo del mensaje" | mail -s "asunto" <email_address>
+#
+# Imprimir con formato:
+#     printf "My username is: $LOGNAME\nMy personal directory is: $HOME\n"
