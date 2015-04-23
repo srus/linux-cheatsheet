@@ -8,7 +8,7 @@
 # Notas sobre Bash
 # ================
 #
-# - Ejemplo de asignación de variable:
+# - Ejemplo de asignación de variable de entorno:
 #       x="hello world"
 #
 # - Ejemplo de uso de variable:
@@ -21,6 +21,14 @@
 #       => /tmp/foo/bar
 #
 #       x="`pwd`"
+#
+# - Se pueden modificar variables de entorno específicamente para la ejecución
+#   de un comando:
+#       echo "`LANG=en date`"
+#       => Wed Apr 15 17:19:53 CEST 2015
+#
+#       echo "`date`"
+#       => mié abr 15 17:20:10 CEST 2015
 #
 # - El carácter '$' permite ejecutar comandos y manipular las variables de tipo
 #   cadena de caracteres para usos diversos, como obtener la longitud de la
@@ -723,6 +731,10 @@
 # Descargar una web completa:
 #     wget --recursive --no-parent --page-requisites --user-agent Mozilla <URL>
 #
+# Mostrar conexiones TCP (-t) de forma continua (-c) e indicando el valor
+# númerico del puerto (--numeric-ports):
+#     netstat -t -c --numeric-ports
+
 # Mostrar en qué puerto está escuchando un servicio:
 #     netstat -a | grep <service>
 #
@@ -816,14 +828,18 @@
 #     date
 #
 #     Se pueden usar varios formatos:
-#         date +%F
+#         date '+%F'
 #         => 2014-09-15
 #
-#         date +%Y%m%d
+#         date '+%Y%m%d'
 #         => 20140915
 #
-#         date +%y%m%d
+#         date '+%y%m%d'
 #         => 140915
+#
+#         date '+%b %d'
+#         =>
+#         abr 15
 #
 # Tabla de símbolos ASCII:
 #     man ascii
