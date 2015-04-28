@@ -15,7 +15,7 @@
 #       echo "$x"
 #
 # - El carácter '`' (acento grave) permite ejecutar comandos dentro de
-#   expresiones. Ejemplos:
+#   expresiones:
 #
 #       echo "`pwd`"
 #       => /tmp/foo/bar
@@ -24,6 +24,7 @@
 #
 # - Se pueden modificar variables de entorno específicamente para la ejecución
 #   de un comando:
+#
 #       echo "`LANG=en date`"
 #       => Wed Apr 15 17:19:53 CEST 2015
 #
@@ -61,6 +62,18 @@
 #           x="hello world"
 #           echo "${x//world/people}"
 #           => hello people
+#
+#       Acceso a vector de cadenas: ${var[index]}
+#           x=(hello world)
+#           echo "${x[0]}"
+#           => hello
+#           echo "${x[1]}"
+#           => world
+#
+#           Si `index` es '@' se accede a todas las cadenas:
+#           x=(hello world)
+#           echo "${x[@]}"
+#           => hello world
 #
 #       Otros usos:
 #           $0: Nombre del script o de la shell.
@@ -117,8 +130,9 @@
 #
 # Info de la CPU:
 #     lscpu
-# O bien:
-#     cat /proc/cpuinfo
+#
+#     O bien:
+#         cat /proc/cpuinfo
 #
 # Mostrar número de núcleos de procesador disponibles:
 #     nproc
@@ -158,12 +172,15 @@
 #
 # Mostrar el modo actual de rendimiento del procesador:
 #     cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
-# Para cambiar el modo del procesador de forma permanente hay que modificar el
-# archivo:
-#     /etc/sysfs.conf
-# Y añadir la línea:
-#     devices/system/cpu/cpu0/cpufreq/scaling_governor=<modo_cpu>
-# Previamente hay que tener instalado el paquete "sysfsutils".
+#
+#     Para cambiar el modo del procesador de forma permanente hay que modificar
+#     el archivo:
+#         `/etc/sysfs.conf`
+#
+#     Y añadir la línea:
+#         `devices/system/cpu/cpu0/cpufreq/scaling_governor=<modo_cpu>`
+#
+#     Nota: Es necesario tener instalado el paquete "sysfsutils".
 #
 # Info de los dispositivos de red instalados:
 #     iwconfig
@@ -184,7 +201,51 @@
 # Administración del sistema
 # ==========================
 #
-#  Ver qué usuarios han iniciado sesión y qué están haciendo:
+# Salir de la shell:
+#     exit ó <Ctrl + D>
+#
+# Mostrar la ayuda de Bash:
+#     help [<command>]
+#
+# Buscar un comando en el historial de bash:
+#     <CTRL> + R + <command>            # avanzar
+#     <CTRL> + <SHIFT> + R + <command>  # retroceder
+#
+# Eliminar línea actual en la shell:
+#     <CTRL> + U
+#
+# Eliminar palabra actual en la shell:
+#     <CTRL> + W
+#
+# Mostrar todos los manuales donde aparezca la palabra "crontab":
+#     man -k crontab
+#
+#     Si hay varios manuales que se llaman "crontab", mostrar aquel con
+#     identificador igual a 5:
+#         man 5 crontab
+#
+# Moverse al directorio $HOME:
+# cd
+#
+# Moverse al directorio en que se estaba antes:
+#     cd -
+#
+#     Ejemplos:
+#
+#         pwd
+#         => /tmp/foo/
+#
+#         cd ../bar && pwd && cd -
+#         => /tmp/bar/
+#         => /tmp/foo/
+#
+#         pwd
+#         => /tmp/foo/
+#
+# Ver qué usuarios han iniciado sesión:
+#     who
+#
+# Ver qué usuarios han iniciado sesión y qué están haciendo:
 #     w
 #
 # Convertirse en root modificando el entorno (environment):
@@ -202,23 +263,11 @@
 # Forzar reinicio de Linux (para casos extremos):
 #     <ALT> + <IMPR. PANTALLA> + escribir REISUB
 #
-# Reiniciar las X:
-#     <ALT> + <CTRL> + retroceso
-# O bien:
+# Reiniciar las X (servidor gráfico):
 #     <ALT> + <IMPR. PANTALLA> + K
 #
-# Mostrar todos los manuales donde aparezca la palabra "crontab":
-#     man -k crontab
-# Si hay varios manuales que se llaman "crontab", mostrar aquel con
-# identificador igual a 5:
-#     man 5 crontab
-#
-# Mostrar la ayuda de Bash:
-#     help [<command>]
-#
-# Buscar un comando en el historial de bash:
-#     <CTRL> + R            # avanzar
-#     <CTRL> + <SHIFT> + R  # retroceder
+#     O bien:
+#         <ALT> + <CTRL> + retroceso
 #
 # Mostrar el estado de los servicios del sistema:
 #     service --status-all
@@ -235,69 +284,9 @@
 # Desinstalar un servicio del arranque:
 #     sudo update-rc.d -f <daemon_name> remove
 #
-# Mostrar todos los enlaces dinámicos del sistema:
-#     ldconfig -v | less
-#
 # Interfaces gráficas para gestionar servicios del sistema:
 #     bum (gtk)
-#     rcconf (consola)
-#
-# Moverse al directorio en que se estaba antes:
-#     cd -
-# Ejemplo:
-#     pwd
-#     => /tmp/foo/
-#
-#     cd ../bar && pwd && cd -
-#     => /tmp/bar/
-#     => /tmp/foo/
-#
-#     pwd
-#     => /tmp/foo/
-#
-# Moverse al directorio $HOME:
-# cd
-#
-# Pasar la salida de un programa como argumentos a otro programa:
-#     <programa1> | xargs <programa2>
-#
-#     Ejemplo:
-#         cat dirs.txt
-#         =>
-#         dir1
-#         dir2
-#         dir3
-#
-#         cat dirs.txt | xargs mkdir
-#
-#         ls
-#         => dir1  dir2  dir3  dirs.txt
-#
-#     Ejemplo (nombres con espacios en blanco):
-#         cat dirs.txt
-#         =>
-#         dir 1
-#         dir 2
-#         dir 3
-#
-#         sed "s/\ /\\\ /g" dirs.txt | xargs mkdir
-#
-#         ls
-#         => dir 1  dir 2  dir 3  dirs.txt
-#
-#     Por defecto se toma como separador el salto de línea (\n). Algunos
-#     programas (como `find`) permiten modificar la salida para usar como
-#     separador el carácter nulo (\0).
-#
-#     Ejemplo: Eliminar los directorios vacíos encontrados con find.
-#
-#         find -type d -iname 'dir*' -print0 | xargs -0 rmdir
-#
-#     Con `-print0` se sustituye el carácter "fin de línea" (\n) por el
-#     carácter "null" (\0). En este caso la opción "-0" de xargs indica
-#     que en la entrada se usa el carácter "null" para el fin de línea, y
-#     también sirve para que los caracteres '"' y '\' no se traten como
-#     caracteres especiales.
+#     rcconf (shell)
 #
 # Comprobar y reparar el sistema de archivos. Es necesario realizar esta
 # operación desde un live CD:
@@ -319,17 +308,25 @@
 # Mostrar los procesos en forma de árbol:
 #     pstree
 #
+# Interrumpir el proceso actual:
+#     <Ctrl + C>
+#
 # Detener (pausar) el proceso actual:
-#     <CTRL> + Z
+#     <Ctrl + Z>
 #
-# Reactivar el último proceso detenido:
-#     fg
+# Reactivar un proceso detenido (por defecto el último) y enviarlo
+# a primer plano:
+#     fg [<job_id>]
 #
-# Detener un proceso cualquiera:
-#     kill -STOP <pid>
+# Reactivar un proceso detenido (por defecto el último) y enviarlo
+# a segundo plano:
+#     bg [<job_id>]
 #
 # Mostrar procesos detenidos:
 #     jobs
+#
+# Detener un proceso cualquiera:
+#     kill -STOP <pid>
 #
 # Reactivar un proceso cualquiera:
 #     kill -CONT <pid>
@@ -348,15 +345,65 @@
 #
 # Matar el cliente gráfico (servidor X) de un proceso:
 #     xkill
-# Nota: Esta utilidad sólo cierra la conexión con el servidor X, lo que provoca
-# que la mayoría de programas se cierren también, aunque algunos pueden no
-# cerrarse (ver `man xkill`).
+#
+#     Nota:
+#     Esta utilidad sólo cierra la conexión con el servidor X, lo que provoca
+#     que la mayoría de comandos se cierren también, aunque algunos pueden no
+#     cerrarse (ver `man xkill`).
 #
 # Ejecutar comando inmune a señal SIGHUP (logout). Útil para ejecutar comando
 # en background en servidor remoto. Por defecto la salida estándar se
 # redirecciona a `./nohup.out` o `$HOME/nohup.out`:
 #     nohup <command> >> <output> &
-# Alternativas similares a este programa: tmux y screen.
+#
+#     Alternativas similares a este comando: tmux y screen.
+#
+# Pasar la salida de un comando como argumentos a otro comando. Útil cuando
+# un comando no permite leer desde la entrada estándar o desde archivos. Otra
+# ventaja de `xargs` es que limita automáticamente el número de argumentos
+# al máximo permitido por el comando:
+#
+#     <comando1> | xargs <comando2>
+#
+#     Ejemplo:
+#         cat dirs.txt
+#         =>
+#         dir1
+#         dir2
+#         dir3
+#
+#         cat dirs.txt | xargs mkdir
+#
+#         ls
+#         => dir1  dir2  dir3  dirs.txt
+#
+#     `xargs` toma por defecto como separador el salto de línea (\n). Algunos
+#     comandos (como `find`) permiten modificar la salida para usar como
+#     separador el carácter nulo (\0).
+#
+#         Ejemplo: Eliminar los directorios encontrados con find:
+#
+#             find -type d -iname 'dir*' -print0 | xargs -0 rmdir
+#
+#         Con `-print0` se sustituye el carácter "fin de línea" (\n) por el
+#         carácter "null" (\0). En este caso la opción "-0" de xargs indica
+#         que en la entrada se usa el carácter "null" para el fin de línea, y
+#         también sirve para que los caracteres '"' y '\' no se traten como
+#         caracteres especiales.
+#
+#     `xargs` también permite realizar sustituciones de cadenas a partir de la
+#     entrada estándar:
+#         <command1> | xargs -I <symbol> <command2> <symbol>
+#
+#         Ejemplo:
+#             echo foobar | xargs -I % echo "msg: %, %"
+#             => msg: foobar, foobar
+#
+#     `xargs` permite lanzar varios procesos en paralelo, para usar varios
+#     núcleos del procesador:
+#         <command> | xargs -P <max_proc>
+#
+#         Si <max_proc> es 0, se permite usar todos los núcleos disponibles.
 #
 #
 # Permisos
@@ -387,12 +434,15 @@
 # Hacer que un usuario (con permiso de ejecución) herede temporalmente los
 # privilegios del grupo de un archivo ejecutable:
 #     chmod g+s <path>
-# Ejemplo:
+#
+#     Ejemplos:
+#
 #     Queremos que todos los usuarios puedan ejecutar el comando "foobar"
 #     (ficticio). Supongamos que este ejecutable tiene permiso de ejecución
 #     para todos los usuarios, pero dado que necesita acceder a un archivo de
 #     configuración del sistema (foobar.conf), sólo el usuario "root" tiene
 #     privilegios suficientes para hacerlo. Solución:
+#
 #         - Crear el grupo "foobar".
 #         - Cambiar el grupo de dicho archivo de configuración:
 #               sudo chown :foobar <path>/foobar.conf
@@ -400,6 +450,7 @@
 #               sudo chown :foobar <path>/foobar
 #         - Cambiar el bit SGID del ejecutable:
 #               sudo chmod g+s <path>/foobar
+#
 #    A partir de ahora cualquier usuario que ejecute "foobar" heredará los
 #    privilegios del grupo "foobar", y con ello podrá acceder a "foobar.conf".
 #
@@ -449,24 +500,28 @@
 #
 # Ver el contenido de un directorio:
 #     ls <path>
-# O bien:
-#     l <path>
-# Nota: Con `l` los directorios, binarios y enlaces se muestran en otro
-# formato.
+#
+#     O bien: l <path>
+#
+#     Nota:
+#     Con `l` los directorios, binarios y enlaces se muestran en otro formato.
 #
 # Ver el contenido de un directorio en detalle (sin archivos ni directorios
 # ocultos):
 #     ls -l <path>
-# Nota: Con la opción `-h` muestra el tamaño en un formato más legible (KB,
-# MB, GB).
+#
+#     Nota:
+#     Con la opción `-h` muestra el tamaño en un formato más legible (KB,
+#     MB, GB).
 #
 # Ver el contenido de un directorio en detalle (con archivos y directorios
 # ocultos):
 #     ls -la <path>
-# O bien:
-#     ll <path>
-# Nota: Con `ll` los directorios, binarios y enlaces se muestran en otro
-# formato.
+#
+#     O bien: ll <path>
+#
+#     Nota:
+#     Con `ll` los directorios, binarios y enlaces se muestran en otro formato.
 #
 # Ver el contenido de un directorio en forma de árbol:
 #     tree -L <deep_level>
@@ -476,16 +531,19 @@
 #
 # Copiar un archivo en la misma ruta de origen añadiendo un sufijo al nombre:
 #     cp <path>{,sufix}
-# Ejemplo:
-#     cp tmp/file.txt{,.tmp}
-#     ls tmp
-#     => file.txt file.txt.tmp
+#
+#     Ejemplo:
+#         cp tmp/file.txt{,.tmp}
+#         ls tmp
+#         => file.txt file.txt.tmp
 #
 # Buscar archivos por nombre usando la base de datos del sistema:
 #     locate <filename>
-# Nota: Probablemente no funcionará con archivos creados recientemente, ya que
-# Linux no habrá tenido tiempo de actualizar la base de datos del sistema (lo
-# cual se hace con una tarea cron diariamente).
+#
+#     Nota:
+#     Probablemente no funcionará con archivos creados recientemente, ya que
+#     Linux no habrá tenido tiempo de actualizar la base de datos del sistema,
+#     lo cual se hace con una tarea cron diariamente.
 #
 # Buscar archivos y directorios mediante una expresión regular:
 #     find <path> '<pattern>'
@@ -496,8 +554,14 @@
 #     Con la opción `-iname` busca sin sensibilidad a mayúsculas:
 #         find <path> -iname '<pattern>'
 #
-#     Con la opción `-not` busca lo contrario:
-#         find <path> -not -iname '<pattern>'
+#     Con la opción `!` o `-not` busca lo contrario:
+#         find <path> {!,-not} -iname '<pattern>'
+#
+#     Con la opción `-a` o `-and` busca todos los patrones:
+#         find <path> -iname '<pattern1>' {-a,-and} -iname '<pattern2>'
+#
+#     Con la opción `-o` o `-or` busca alguno de los patrones:
+#         find <path> -iname '<pattern1>' {-o,-or} -iname '<pattern2>'
 #
 #     Con la opción `-type f` busca sólo archivos:
 #         find <path> -type f -iname '<pattern>'
@@ -539,7 +603,7 @@
 #     tar -zcvf <filename.tar.gz> <filename>
 #
 # Descomprimir tar.gz (manteniendo los permisos):
-#     tar -zxpf <filename.tgz>
+#     tar -zxpf <filename.tar.gz>
 #
 # Empaquetar en tar:
 #     tar -cvf <filename.tar> <filename>
@@ -564,6 +628,9 @@
 # caso contrario):
 #     test -d <file>
 #
+# Ejecutar un comando sobre un archivo cuyo nombre comienza por '-':
+#     <command> ./<filename>
+#
 #
 # Archivos de texto
 # =================
@@ -579,10 +646,12 @@
 #
 # Buscar las ocurrencias que contengan `keyword1` o `keyword2`:
 #     egrep '<keyword1>|<keyword2>' <file>
-# Nota: `egrep` es equivalente a `grep -E`.
-# Con `-E` (de "Extended mode") indicamos a grep que use el símbolo "|" como
-# un operador, evitando tener que escaparlo. Lo mismo ocurre con el resto de
-# meta-caracteres: {, }, (, ), ?, +.
+#
+#     Nota: `egrep` es equivalente a `grep -E`.
+#
+#     Con `-E` (de "Extended mode") indicamos a grep que use el símbolo "|"
+#     como un operador, evitando tener que escaparlo. Lo mismo ocurre con el
+#     resto de meta-caracteres: {, }, (, ), ?, +.
 #
 # Buscar las ocurrencias que comienzan por `keyword1` o `keyword2`:
 #     egrep '^(keyword1|keyword2)' <file>
@@ -594,11 +663,16 @@
 # palabra clave (sin el contexto):
 #     grep -o '<keyword>' <file>
 #
+# Añadir algunas líneas de contexto en las ocurrencias encontradas:
+#     grep -C <NUM> '<pattern>' <file>
+#
 # Buscar texto leyendo el patrón desde un archivo:
 #     grep -f <patterns_file> <file>
 #
 # Buscar texto en archivos de un directorio recursivamente:
 #     rgrep '<pattern>' <path>
+#
+#     `rgrep` es equivalente a `grep -R`.
 #
 # Mostrar el contenido de un archivo conforme se va modificando:
 #     tail -f <path>
@@ -609,34 +683,54 @@
 # Buscar expresion regular en un archivo abierto con less (también sirve en
 # man, ya que está basado en less):
 #     /<pattern>
-# A continuación pulsar `n` para saltar a la siguiente ocurrencia o `shift + n`
-# para saltar hacia atrás.
 #
-# Sustituir todas las ocurrencias de "my_path" por el resultado de `pwd` en
-# todos los archivos con extensión ".txt" de un directorio:
-#     p="`pwd`"
-#     p="${p//\//\\/}"  # escapa todas las barras
-#     sed -i "s/my_path/$p/g" *.txt
+#     A continuación pulsar `n` para saltar a la siguiente ocurrencia o
+#     `shift + n` para saltar hacia atrás.
+#
+# Transformar/filtrar texto desde archivos o desde la entrada estándar:
+#     sed [-i] "<pattern>" <files>
+#
+#     Con la opción `-i` se escribe en los archivos de entrada. Por defecto se
+#     escribe en la salida estándar.
+#
+#     Ejemplos:
+#
+#      Sustituir todas las ocurrencias de "my_path" por el resultado de `pwd`
+#      en todos los archivos con extensión ".txt" de un directorio:
+#          p="`pwd`"
+#          p="${p//\//\\/}"  # escapa todas las barras
+#          sed -i "s/my_path/$p/g" *.txt
+#
+#      Escapar espacios en blanco de un archivo con nombres de directorios y
+#      crear dichos directorios:
+#          sed "s/\ /\\\ /g" dirs.txt | xargs -I % mkdir "%"
 #
 # Sustituir todas las ocurrencias de "my_path" por el resultado de `pwd`
 # recursivamente (-R) en todos los archivos con extensión ".txt" (-x) de un
 # directorio, sin cambiar las fechas de modificación (-d):
 #     rpl -Rd -x'.txt' 'my_path' "`pwd`" <dir_path>
-# Nota: Es necesario tener instalado el paquete "rpl".
+#
+#     Nota: Es necesario tener instalado el paquete "rpl".
 #
 # Filtrar columnas de un texto tabulado con espacios o tabuladores:
 #     awk '{print $<column_number>}' <file>
-# Ejemplo: mostrar el PID de todos los procesos del usuario "sergio":
-#     ps -ef | grep sergio | awk '{print $2}'
-#     =>
-#     3134
-#     3145
-#     ...
+#
+#     Ejemplo:
+#
+#     Mostrar el PID de todos los procesos del usuario "sergio":
+#         ps -ef | grep sergio | awk '{print $2}'
+#         =>
+#         3134
+#         3145
+#         ...
 #
 # Filtrar columnas de un texto tabulado usando un delimitador específico:
 #     cut -d <delimiter> -f <column_number> <file>
-# Ejemplo: mostrar sólo la primera columna (columnas separadas por un espacio):
-#     cut -d ' ' -f 1 <file>
+#
+#     Ejemplo:
+#
+#     Mostrar sólo la primera columna (columnas separadas por un espacio):
+#         cut -d ' ' -f 1 <file>
 #
 # Eliminar caracteres:
 #     echo "ab123" | tr -d 'abc'
@@ -657,7 +751,8 @@
 #
 # Ver diferencias entre archivos en color:
 #     colordiff <file1> <file2>
-# Nota: Es necesario tener instalado el paquete "colordiff".
+#
+#     Nota: Es necesario tener instalado el paquete "colordiff".
 #
 # Aplicar parche a los archivos de un directorio a partir de un archivo diff:
 #     patch -p1 -N -d <old_directory> < changes.diff
@@ -697,9 +792,6 @@
 # Conexión SSH por puerto específico:
 #     ssh -p <port> <username>@<host>
 #
-# Reiniciar servidor SSH:
-#     sudo service ssh restart
-#
 # Copiar archivos desde el host local a un host remoto:
 #     scp <origin_file> <username>@<host>:<destination_file>
 #
@@ -723,10 +815,13 @@
 #
 # Descargar página e imprimir por salida estándar (-O -) en modo "quiet" (-q,
 # sin imprimir mensajes de wget).
-# Nota: En wget el símbolo '-' identifica a la salida estándar.
-#     wget -q -O - <URL>
-# Aunque normalmente se escribe como:
-#     wget -qO- <URL>
+#
+#     Nota:
+#     En wget el símbolo '-' identifica a la salida estándar.
+#         wget -q -O - <URL>
+#
+#     Aunque normalmente se escribe como:
+#         wget -qO- <URL>
 #
 # Descargar una web completa:
 #     wget --recursive --no-parent --page-requisites --user-agent Mozilla <URL>
@@ -787,29 +882,38 @@
 # ===============================================================
 #
 # Instalación desde código fuente:
-#     ./configure [--prefix=<path>]
-#     make
-#     sudo make install
-# También se podría usar "checkinstall" para crear un paquete y evitar
-# compilación en una futura instalación.
+#     ./configure [--prefix=<path>] && make && make install
 #
-# Instalación de paquetes:
-#     sudo dpkg -i <package>
-#
-# Instalación de dependencias de paquetes rotos:
-#     sudo aptitude install -f
+#     También se podría usar "checkinstall" para crear un paquete y evitar
+#     compilar en una futura instalación.
 #
 # Desinstalar un programa instalado desde código fuente:
 #     ./configure && make && sudo make install
-# Hay que abrir el directorio del código fuente desde donde se instaló y hacer:
-#     sudo make uninstall
-# Y para limpiar residuos:
-#     make clean
-# Nota: Puede que el programa no disponga de desinstalación.
+#
+#     Hay que abrir el directorio del código fuente desde donde
+#     se instaló y hacer:
+#         make uninstall
+#
+#     Y para limpiar residuos:
+#         make clean
+#
+#     Nota: Puede que el programa no disponga de `uninstall`.
 #
 # Mostrar dependencias de bibliotecas compartidas en ejecutable con
 # vinculación dinámica:
-#     ldd <binfile>
+#     ldd <binary_file>
+#
+# Mostrar todos los enlaces dinámicos del sistema:
+#     ldconfig -v | less
+#
+# Instalar un paquete Debian:
+#     dpkg -i <package>
+#
+# Instalar un paquete RPM:
+#     rpm -Uvh <package>
+#
+# Instalar dependencias de paquetes rotos:
+#     sudo aptitude install -f
 #
 #
 # Varios
@@ -853,19 +957,31 @@
 # Crear una imagen ISO 9660 a partir de un directorio:
 #     genisoimage -r -J -o <image.iso> <dir_path>
 #
-# Imprimir una secuencia de números:
-#     seq <first> <increment> <last>
-# Ejemplos:
-#     echo "`seq 10`"
-#     =>
-#     1 2 3 4 5 6 7 8 9 10
+# Imprimir una secuencia de números. Con la opción `-w` rellena con ceros:
+#     seq [-w] <first> <increment> <last>
 #
-#     echo "`seq 0 10`"
-#     =>
-#     0 1 2 3 4 5 6 7 8 9 10
+#     Ejemplos:
 #
-#     echo "`seq 0 2 10`"
-#     => 0 2 4 6 8 10
+#         seq 2
+#         =>
+#         1
+#         2
+#
+#         seq 0 2
+#         =>
+#         0
+#         1
+#         2
+#
+#         seq 0 2 4
+#         =>
+#         0
+#         2
+#         4
+#
+#         seq -w 10 | xargs echo
+#         =>
+#         01 02 03 04 05 06 07 08 09 10
 #
 # Saltar a cualquier directorio del sistema:
 #     z <dirname>
@@ -878,7 +994,7 @@
 #     xclip -sel clip < <file>
 #
 #  Crear una pareja de claves pública/privada RSA con OpenSSH:
-#     ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
+#     ssh-keygen -t rsa -b <key_size> -C "<comment>"
 #
 # Enviar un email:
 #     echo "cuerpo del mensaje" | mail -s "asunto" <email_address>
@@ -889,4 +1005,3 @@
 # Ejecutar un script desde consola o importarlo (como el #include de C) desde
 # un script. También se puede usar '.' en lugar de `source`:
 #     source <script>
-
