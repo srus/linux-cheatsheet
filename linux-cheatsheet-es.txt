@@ -5,8 +5,11 @@
 # =============================================================================
 #
 #
-# Notas sobre Bash
+# Notas sobre Bash [3]
 # ================
+#
+# Variables y cadenas de caracteres
+# ---------------------------------
 #
 # - Ejemplo de asignación de variable de entorno:
 #       x="hello world"
@@ -51,14 +54,19 @@
 #           echo "${#x}"
 #           => 11
 #
-#       Subcadenas: ${var:offset:length}
+#       Subcadena por posición: ${var:offset:length}
 #           x="hello world"
 #           echo "${x:1:6}"
 #           => ello w
 #           echo "${x:0:-3}"
 #           => hello wo
 #
-#       Reemplazamiento: ${var//pattern/string}
+#       Subcadena recortando por la cola: ${var%substring}
+#           x="foo.png"
+#           echo "${x%.png}"
+#           => foo
+#
+#       Reemplazamiento de todas las ocurrencias: ${var//pattern/string}
 #           x="hello world"
 #           echo "${x//world/people}"
 #           => hello people
@@ -80,6 +88,7 @@
 #           $1, $2, ...: Acceso por posición a los argumentos del script.
 #           $_: Último argumento recibido en el comando anterior.
 #           $$: PID de la shell.
+#           $BASHPID: PID de la subshell.
 #           $?: Estado de salida del comando anterior.
 #
 # - Las comillas simples y dobles no son equivalentes. Con comillas dobles
@@ -101,21 +110,145 @@
 #       echo '`pwd`'
 #       => `pwd`
 #
+#
+# Variables de entorno
+# --------------------
+#
+# Para definir una variable de entorno en la sesión actual de Bash se usa la
+# palabra reservada `export`:
+#
+#     export FOO="bar"
+#
+# Esta variable estará disponible mientras el proceso esté activo.
+#
+# También podemos definir variables de entorno que sólo estén disponibles en la
+# ejecución de un comando:
+#
+#     FOO1="bar1" FOO2="bar2" ./foobar.sh
+#
+#
+# Ejecución de comandos
+# ---------------------
+#
+# - Bash permite agrupar comandos [2] para tratarlos como una unidad, haciendo
+#   por ejemplo que devuelvan una salida única:
+#
+#       - Si la agrupación se hace con paréntesis, los comandos se ejecutan en
+#         una subshell (proceso hijo):
+#
+#             (echo "$$"; echo "$BASHPID")
+#             =>
+#             16200
+#             22352
+#
+#         Nota: Bash también ejecuta los scripts en una subshell.
+#
+#       - Si la agrupación se hace con llaves, los comandos se ejecutan en el
+#         mismo contexto (mismo proceso que la shell):
+#
+#             { echo "$$"; echo "$BASHPID"; }
+#             =>
+#             16200
+#             16200
+#
+#         Al usar llaves es obligatorio escribir ';' al final de la lista de
+#         comandos y separar las llaves con espacios.
+#
 # - El comando `set` permite configurar opciones de la shell. Por ejemplo, es
 #   recomendable añadir al comienzo del script la opción `set -u`, que sirve
 #   para tratar las variables no definidas como un error, evitando errores
 #   silenciosos. Otra opción que puede ser útil es `set -e`, para interrumpir
 #   la ejecución del script cuando algún comando devuelva un valor distinto de
-#   0 (error). El problema es que puede haber comandos que de forma
+#   0 (0 indica éxito). El problema es que puede haber comandos que de forma
 #   intencionada devuelvan un valor distinto de 0. Por ello es recomendable
 #   evitar el uso de `set -e` y realizar las comprobaciones de errores
 #   manualmente por cada comando, por ejemplo siguiendo este patrón:
 #
-#       comando || { echo "error"; exit 1; }
+#       <comand> || { echo "error"; exit 1; }
+#
+#   Otra opción muy usada es `-o pipefail`, para devolver siempre un valor
+#   distinto de 0 si falla algún comando en una tubería (cmd1 | cmd2 | cmd3).
+#
+#
+# Redireccionamiento de entrada/salida [1]
+# ------------------------------------
+#
+# - Por defecto existen tres archivos abiertos siempre disponibles:
+#       stdin (entrada estándar)
+#       stdout (salida estándar)
+#       stderr (errores)
+#
+#   cuyos descriptores de archivo son respectivamente:
+#       0
+#       1
+#       2
+#
+# - Los archivos, comandos, programas y scripts se pueden redireccionar
+#   mediante operadores:
+#
+#       - Redireccionar la salida de un comando a un archivo, sobreescribiendo
+#         o creándolo si no existiera:
+#
+#             <command> > <file>
+#
+#       - Redireccionar la salida de un comando a un archivo, concatenando o
+#         creándolo si no existiera:
+#
+#             <command> >> <file>
+#
+#       - Redireccionar un archivo como entrada de un comando:
+#
+#             <command> < <file>
+#
+#             También se puede usar como entrada la salida de un comando
+#             usando una subshell (ver arriba cómo agrupar comandos):
+#
+#                 <command1> <(<command2>)
+#
+#             Ejemplo:
+#                 shuf <(seq 3)
+#                 => 1 3 2
+#
+#       - Redireccionar la salida de un comando a otro comando:
+#
+#             <command1> | <command2> | <command3>
+#
+# - Los comandos usan por defecto los archivos stdin, stdout y sdterr para la
+#   entrada/salida. Esto se puede modificar en cada ejecución:
+#
+#       - Redireccionar stdout a un archivo:
+#
+#             <command> 1> <file>
+#
+#       - Redireccionar stderr a un archivo:
+#
+#             <command> 2> <file>
+#
+#       - Redireccionar stdout y stderr a un archivo:
+#
+#             <command> &> <file>
+#
+#       - Redireccionar stdout a un archivo y stderr a la salida estándar (esto
+#         es equivalente a la redirección anterior):
+#
+#             <command> 1> <file> 2>&1
+#
+#             En general cualquier descriptor de archivo 'i' se puede
+#             redireccionar a otro 'j':
+#
+#                 i>&j
+#
+#             Si no se indica nada, por defecto se usa el descriptor 1
+#             (stdout):
+#
+#                 >&j
 #
 #
 # Información y configuración del sistema
 # =======================================
+#
+# Descripción de la jerarquía del sistema de archivos:
+#     man hier
 #
 # Versión del kernel:
 #     uname -a
@@ -225,7 +358,7 @@
 #         man 5 crontab
 #
 # Moverse al directorio $HOME:
-# cd
+#     cd
 #
 # Moverse al directorio en que se estaba antes:
 #     cd -
@@ -291,6 +424,20 @@
 # Comprobar y reparar el sistema de archivos. Es necesario realizar esta
 # operación desde un live CD:
 #     fsck -V <ruta_a_dispositivo>
+#
+# Medir el uso de recursos de un programa:
+#     /usr/bin/time [-v] <command>
+#
+#     Nota:
+#     Bash incluye por defecto el comando `time`, pero muestra una información
+#     mucho más resumida que la anterior:
+#         time <command>
+#
+# Vaciar los buffers de memoria y guardarlos en disco. El kernel de Linux
+# almacena en memoria RAM datos para minimizar las lecturas/escrituras de
+# disco, mucho más lento. Para evitar posibles pérdidas de datos, se puede
+# obligar al kernel a que guarde estos buffers en el disco duro:
+#     sync
 #
 #
 # Procesos
@@ -377,33 +524,50 @@
 #         ls
 #         => dir1  dir2  dir3  dirs.txt
 #
-#     `xargs` toma por defecto como separador el salto de línea (\n). Algunos
-#     comandos (como `find`) permiten modificar la salida para usar como
-#     separador el carácter nulo (\0).
+#     `xargs` no es capaz de procesar archivos que contienen en el nombre
+#     saltos de línea (\n) o espacios en blanco (por defecto se toma como
+#     separador el salto de línea). Para evitar esto se usa la opción "-0",
+#     que indica que en la entrada se usa el carácter "null" (\0) como
+#     separador. También hace que los caracteres '"' y '\' no se traten como
+#     caracteres especiales. Algunos comandos (como `find`) permiten modificar
+#     la salida para usar como separador el carácter "null" (\0).
 #
-#         Ejemplo: Eliminar los directorios encontrados con find:
+#         Ejemplos:
 #
-#             find -type d -iname 'dir*' -print0 | xargs -0 rmdir
+#         Eliminar los directorios encontrados con `find`:
+#             find / -type d -iname '*dirname*' -print0 | xargs -0 rmdir
 #
-#         Con `-print0` se sustituye el carácter "fin de línea" (\n) por el
-#         carácter "null" (\0). En este caso la opción "-0" de xargs indica
-#         que en la entrada se usa el carácter "null" para el fin de línea, y
-#         también sirve para que los caracteres '"' y '\' no se traten como
-#         caracteres especiales.
+#         Listar el contenido de los directorios encontrados con `find`:
+#             find / -type d -iname '*dirname*' -print0 | xargs -0 ls -l
 #
 #     `xargs` también permite realizar sustituciones de cadenas a partir de la
 #     entrada estándar:
-#         <command1> | xargs -I <symbol> <command2> <symbol>
+#
+#         <command1> | xargs -I <str_repl> <command2> <str_repl>
 #
 #         Ejemplo:
-#             echo foobar | xargs -I % echo "msg: %, %"
+#             echo foobar | xargs -I "%" echo "msg: %, %"
 #             => msg: foobar, foobar
 #
 #     `xargs` permite lanzar varios procesos en paralelo, para usar varios
 #     núcleos del procesador:
+#
 #         <command> | xargs -P <max_proc>
 #
 #         Si <max_proc> es 0, se permite usar todos los núcleos disponibles.
+#
+#     A diferencia de GPU Parallel, `xargs` sólo permite ejecutar 1 comando.
+#     Si se requieren más comandos, es necesario ejecutar el script desde un
+#     archivo o desde una cadena de caracteres con la opción `-c` de Bash:
+#
+#         <command> | xargs bash -c '<script_body>'
+#
+# Copiar la entrada estándar en archivos y en la salida estándar al mismo
+# tiempo. Útil para guardar una copia en disco de la salida de un comando:
+#     <command1> | tee [-a|--append] <file> | <command2>
+#
+#     Ejemplo:
+#         seq 3 | tee numbers.txt | wc -l
 #
 #
 # Permisos
@@ -459,10 +623,10 @@
 #     chmod g+s <path>
 #
 # Comprobar si un usuario existe en el sistema:
-#     egrep -i '^<username>' /etc/passwd
+#     grep -i '<username>' /etc/passwd
 #
 # Comprobar si un grupo existe en el sistema:
-#     egrep -i '^<groupname>' /etc/group
+#     grep -i '<groupname>' /etc/group
 #
 # Añadir un usuario:
 #     sudo adduser <username>
@@ -587,6 +751,10 @@
 #     principio iría eliminando TODOS los archivos y directorios que fuera
 #     encontrando!
 #
+#     Con la opción `-print0` se cambia en la salida el carácter "salto de
+#     línea" (\n) por el carácter "null" (\0). Ojo, esta opción se añade
+#     siempre al final.
+#
 # Comprimir en gzip:
 #     gzip -c <in_file> > <out_file>
 #
@@ -672,7 +840,7 @@
 # Buscar texto en archivos de un directorio recursivamente:
 #     rgrep '<pattern>' <path>
 #
-#     `rgrep` es equivalente a `grep -R`.
+#     `rgrep` es equivalente a `grep -r`.
 #
 # Mostrar el contenido de un archivo conforme se va modificando:
 #     tail -f <path>
@@ -725,19 +893,71 @@
 #         ...
 #
 # Filtrar columnas de un texto tabulado usando un delimitador específico:
-#     cut -d <delimiter> -f <column_number> <file>
+#     cut -d <delimiter> -f <columns_range> <file>
 #
 #     Ejemplo:
 #
-#     Mostrar sólo la primera columna (columnas separadas por un espacio):
+#     Mostrar columanas desde la segunda en adelante:
+#         cut -d ' ' -f 2- <file>
+#
+#     Mostrar sólo la primera columna:
 #         cut -d ' ' -f 1 <file>
+#
+# Filtrar sólo los caracteres que aparecen en un rango de posiciones:
+#     cut -c <positions_range> <file>
+#
+#     Ejemplos:
+#
+#     Suponiendo un archivo de texto con el siguiente contenido:
+#         foo:bar:baz:qux:quux
+#         one:two:three:four:five:six:seven
+#         alpha:beta:gamma:delta:epsilon:zeta:eta:theta:iota:kappa:lambda:mu
+#         the quick brown fox jumps over the lazy dog
+#
+#     Filtrar sólo los caracteres que aparecen entre la posición 4 y 10:
+#         cut -c 4-10 <file>
+#         =>
+#         :bar:ba
+#         :two:th
+#         ha:beta
+#          quick
+#
+#     Filtrar sólo los caracteres que aparecen hasta la posición 4:
+#         cut -c -4 <file>
+#         =>
+#         :bar
+#         one:
+#         alph
+#         the
+#
+#     Filtrar sólo los caracteres que aparecen en la posición 1:
+#         cut -c 1 <file>
+#         =>
+#         :
+#         o
+#         a
+#         t
 #
 # Eliminar caracteres:
 #     echo "ab123" | tr -d 'abc'
 #     => 123
 #
 # Eliminar líneas repetidas:
-#     uniq <file>
+#     uniq <file> [-c]
+#
+#     El parámetro '-c' añade el número de ocurrencias de cada línea.
+#
+# Concatenar el contenido de varios archivos y mostrarlo por la salida
+# estándar:
+#     tac <file1> <file2>
+#
+# Ordenar las líneas de un archivo:
+#     sort <file> [-n]
+#
+#     El parámetro '-n' sirve para comparar numéricamente.
+#
+# Ordenar aleatoriamente las líneas de un archivo:
+#     shuf <input_file> > <output_file>
 #
 # Concatenar dos archivos línea a línea usando un delimitador:
 #     paste -d '=' list1.txt list2.txt
@@ -826,19 +1046,21 @@
 # Descargar una web completa:
 #     wget --recursive --no-parent --page-requisites --user-agent Mozilla <URL>
 #
-# Mostrar conexiones TCP (-t) de forma continua (-c) e indicando el valor
-# númerico del puerto (--numeric-ports):
-#     netstat -t -c --numeric-ports
-
+# Mostrar conexiones TCP (-t) y UDP (-u) sin resolver los nombres de dominio
+# (-n) de los programas (-p) que están actualmente escuchando (-l). Para
+# refrescar continuamente usar la opción "-c":
+#     netstat -t -u -l -n -p
+#
 # Mostrar en qué puerto está escuchando un servicio:
-#     netstat -a | grep <service>
+#     netstat -a | grep -i <service>
 #
 # Mostrar qué servicio está escuchando en un puerto:
 #     lsof -i :<port>
 #
 # Comprobar intentos de entrada denegados por DenyHosts:
 #     cat /etc/hosts.deny
-# Es necesario instalar paquete "denyhosts".
+#
+#     Es necesario instalar el paquete "denyhosts".
 #
 # Activar cortafuegos:
 #     sudo ufw enable
@@ -872,7 +1094,16 @@
 #     dig -x <IP>
 #
 # Otra herramienta para consultar información de servidores DNS:
-#     host <URL>
+#     host <URL | IP>
+#
+#     Ejemplo:
+#         host 66.249.90.77
+#         =>
+#         77.90.249.66.in-addr.arpa domain name pointer rate-limited-proxy-66-249-90-77.google.com.
+#
+#         host rate-limited-proxy-66-249-90-77.google.com
+#         =>
+#         rate-limited-proxy-66-249-90-77.google.com has address 66.249.90.77
 #
 # Capturar tráfico de paquetes TCP:
 #     sudo tcpdump -A -vvvv -s 9999 -i <interface> port <port> > tcp.log
@@ -1005,3 +1236,17 @@
 # Ejecutar un script desde consola o importarlo (como el #include de C) desde
 # un script. También se puede usar '.' en lugar de `source`:
 #     source <script>
+#
+# Imprimir variables de entorno:
+#     env
+#
+# Utilidad equivalente a grep, pero con la salida en color:
+#     ack-grep
+#
+#
+# Documentación de referencia
+# ===========================
+#
+# [1] http://www.tldp.org/LDP/abs/html/io-redirection.html
+# [2] http://www.tldp.org/LDP/abs/html/subshells.html
+# [3] http://www.tldp.org/LDP/abs/html/index.html
