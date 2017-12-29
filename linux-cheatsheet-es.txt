@@ -387,11 +387,17 @@
 # Convertirse en root SIN modificar el entorno (environment):
 #     sudo -s  # `logout` para dejar de serlo
 #
-# Iniciar sesión como otro usuario:
+# Iniciar sesión como otro usuario.
 #     sudo su <username>
 #
+#     Si el usario actual es root, también se puede usar el comando "su":
+#         su <username>
+#
 # Ejecutar un comando como otro usuario:
-#     sudo -u <username> <command>
+#     sudo -u [<username>] <command>
+#
+#     Si el usario actual es root, también se puede usar el comando "su":
+#         su -c <command> <username>
 #
 # Forzar reinicio de Linux (para casos extremos):
 #     <ALT> + <IMPR. PANTALLA> + escribir REISUB
@@ -421,9 +427,11 @@
 #     bum (gtk)
 #     rcconf (shell)
 #
-# Comprobar y reparar el sistema de archivos. Es necesario realizar esta
-# operación desde un live CD:
-#     fsck -V <ruta_a_dispositivo>
+# Comprobar sectores defectuosos en un disco en modo no-destructivo:
+#     badblocks -nsv /dev/<device>
+#
+# Comprobar y reparar el sistema de archivos:
+#     fsck -V /dev/<device>
 #
 # Medir el uso de recursos de un programa:
 #     /usr/bin/time [-v] <command>
@@ -827,8 +835,8 @@
 # Buscar las ocurrencias que terminan por `keyword1` o `keyword2`:
 #     egrep '(keyword1|keyword2)$' <file>
 #
-# Buscar una palabra clave en un texto imprimiendo sólo las apariciones de la
-# palabra clave (sin el contexto):
+# Buscar las ocurrencias de "keyword" mostrando sólo las ocurrencias,
+# sin el contexto:
 #     grep -o '<keyword>' <file>
 #
 # Añadir algunas líneas de contexto en las ocurrencias encontradas:
@@ -1242,6 +1250,23 @@
 #
 # Utilidad equivalente a grep, pero con la salida en color:
 #     ack-grep
+#
+# Cambiar el comportamiento del buffer en operaciones de entrada/salida.
+# Por ejemplo, al escribir en un archivo, el SO usa un buffer de
+# de escritura, lo que hace que si al mismo tiempo se visualiza cómo
+# cambia el contenido del archivo en tiempo real con "tail -f", la
+# información no se muestra de forma continua. Esto no ocurre cuando se
+# imprime la salida de un comando en la pantalla. En ese caso no se usa
+# buffer y la información se muestra de forma continua.
+#
+#     Sintaxis para no usar buffer en la salida:
+#         stdbuf -oL <command>
+#
+#     Ejemplo:
+#         tail -f access.log | stdbuf -oL
+#
+# Visualizar un archivo JSON formateado:
+#     cat <filename.json> | json_pp | less
 #
 #
 # Documentación de referencia
