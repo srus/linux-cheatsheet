@@ -850,6 +850,11 @@
 #
 #     `rgrep` es equivalente a `grep -r`.
 #
+# Utilidad basada en grep para buscar en archivos comprimidos:
+#     zgrep
+#
+#     Ejemplo: zgrep 'foobar' /path/to/folder/log*.gz
+#
 # Mostrar el contenido de un archivo conforme se va modificando:
 #     tail -f <path>
 #
@@ -1262,8 +1267,9 @@
 #     Sintaxis para no usar buffer en la salida:
 #         stdbuf -oL <command>
 #
-#     Ejemplo:
-#         tail -f access.log | stdbuf -oL
+#     Ejemplos:
+#         tail -f access.log | stdbuf -oL cat
+#         tail -f access.log | stdbuf -oL cut -d ' ' -f1 | uniq
 #
 # Visualizar un archivo JSON formateado:
 #     cat <filename.json> | json_pp | less
