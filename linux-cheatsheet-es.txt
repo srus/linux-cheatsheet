@@ -698,8 +698,11 @@
 # Ver el contenido de un directorio en forma de árbol:
 #     tree -L <deep_level>
 #
-# Ver el tamaño de un directorio:
-#     du -sh <path>
+# Ver el tamaño total de un directorio:
+#     du -h -d 0 <path>
+#
+# Ver el tamaño del contenido de un directorio:
+#     du -h -d 1 <path>
 #
 # Copiar un archivo en la misma ruta de origen añadiendo un sufijo al nombre:
 #     cp <path>{,sufix}
@@ -1107,7 +1110,9 @@
 #     dig -x <IP>
 #
 # Otra herramienta para consultar información de servidores DNS:
-#     host <URL | IP>
+#     host [-d] <URL | IP>
+#
+#     Con el parámetro opcional '-d' muestra más información.
 #
 #     Ejemplo:
 #         host 66.249.90.77
