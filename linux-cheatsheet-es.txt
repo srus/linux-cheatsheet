@@ -110,6 +110,15 @@
 #       echo '`pwd`'
 #       => `pwd`
 #
+# - Para operar con variables y obtener una expresión, se usa el comando `expr`:
+#       x=1
+#       y=2
+#
+#       echo `expr $x + $y`
+#       => 3
+#
+#       echo $x + $y
+#       => 1 + 2
 #
 # Variables de entorno
 # --------------------
@@ -151,8 +160,8 @@
 #             16200
 #             16200
 #
-#         Al usar llaves es obligatorio escribir ';' al final de la lista de
-#         comandos y separar las llaves con espacios.
+#         Nota: Al usar llaves es obligatorio escribir ';' al final de la lista
+#         de comandos y separar las llaves con espacios.
 #
 # - El comando `set` permite configurar opciones de la shell. Por ejemplo, es
 #   recomendable añadir al comienzo del script la opción `set -u`, que sirve
@@ -209,9 +218,15 @@
 #                 shuf <(seq 3)
 #                 => 1 3 2
 #
-#       - Redireccionar la salida de un comando a otro comando:
+#       - Redireccionar stdout de un comando a otro:
 #
 #             <command1> | <command2> | <command3>
+#
+#       - Redireccionar stdout y stderr de un comando a otro:
+#             <command1> |& <command2>
+#
+#             Equivalente a redireccionar stderr a stdout en el primer comando:
+#                 <command1> 2>&1 | <command2>
 #
 # - Los comandos usan por defecto los archivos stdin, stdout y sdterr para la
 #   entrada/salida. Esto se puede modificar en cada ejecución:
@@ -463,31 +478,30 @@
 # Mostrar los procesos en forma de árbol:
 #     pstree
 #
-# Interrumpir el proceso actual:
-#     <Ctrl + C>
+# Ejecutar un comando y enviarlo a segundo plano:
+#     <comand> &
 #
-# Detener (pausar) el proceso actual:
-#     <Ctrl + Z>
-#
-# Reactivar un proceso detenido (por defecto el último) y enviarlo
-# a primer plano:
-#     fg [<job_id>]
-#
-# Reactivar un proceso detenido (por defecto el último) y enviarlo
-# a segundo plano:
-#     bg [<job_id>]
-#
-# Mostrar procesos detenidos:
+# Mostrar procesos detenidos o enviados a segundo plano:
 #     jobs
 #
-# Detener un proceso cualquiera:
-#     kill -STOP <pid>
+# Reactivar un proceso detenido o enviado a segundo plano y enviarlo a
+# primer plano:
+#     fg [<job_id>]
 #
-# Reactivar un proceso cualquiera:
+# Reactivar un proceso detenido y enviarlo a segundo plano:
+#     bg [<job_id>]
+#
+# Pausar un proceso:
+#     kill -STOP <pid> o <Ctrl + Z> si es el proceso actual
+#
+# Reactivar un proceso:
 #     kill -CONT <pid>
 #
-# Terminar un proceso (por defecto `kill` realiza esta acción):
+# Terminar un proceso de forma controlada:
 #     kill [-TERM] <pid>
+#
+# Interrumpir el proceso actual:
+#     kill -INT <pid> o <Ctrl + C> si es el proceso actual
 #
 # Matar un proceso:
 #     kill -KILL <pid>
@@ -1125,6 +1139,10 @@
 #
 # Capturar tráfico de paquetes TCP:
 #     sudo tcpdump -A -vvvv -s 9999 -i <interface> port <port> > tcp.log
+#
+#
+# Listar reglas de la cadena INPUT de iptables:
+#     sudo iptables -S INPUT
 #
 #
 # Instalación/desinstalación/compilación/vinculación de programas
