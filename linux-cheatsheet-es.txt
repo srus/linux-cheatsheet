@@ -123,18 +123,51 @@
 # Variables de entorno
 # --------------------
 #
-# Para definir una variable de entorno en la sesión actual de Bash se usa la
-# palabra reservada `export`:
+# - Definir una variable de entorno:
 #
-#     export FOO="bar"
+#       FOO="bar"
 #
-# Esta variable estará disponible mientras el proceso esté activo.
+#       echo $FOO
+#       => bar
 #
-# También podemos definir variables de entorno que sólo estén disponibles en la
-# ejecución de un comando:
+#   Esta variable estará disponible mientras el proceso esté activo.
 #
-#     FOO1="bar1" FOO2="bar2" ./foobar.sh
+# - Eliminar una variable de entorno:
+#       unset FOO
 #
+# - Definir variables de entorno que sólo estén disponibles en la ejecución de
+#   un comando:
+#
+#       FOO1="bar1" FOO2="bar2" <comando>
+#
+#       echo $FOO1
+#       =>
+#
+# - Exportar variables de entorno desde un proceso hijo al padre y a los
+#   procesos hermanos sucesivos (que aparecen a la derecha):
+#
+#       cat script1.sh
+#       =>
+#       export FOO="bar"
+#
+#       cat script2.sh
+#       =>
+#       echo $FOO
+#
+#       bash -c 'source ./script1.sh ; ./script2.sh ; echo $FOO'
+#       => bar
+#       => bar
+#
+#       sh -c '. ./script1.sh ; ./script2.sh ; echo $FOO'
+#       => bar
+#       => bar
+#
+#
+#   El comando `source` sólo está disponible en Bash y es un alias de `.`, que
+#   es un comando POSIX disponible en varias shells. Sirve para ejecutar un
+#   script en el entorno de la shell, de forma que las variables creadas o
+#   modificadas en el script siguen disponibles en la shell cuando el script
+#   termina de ejecutarse.
 #
 # Ejecución de comandos
 # ---------------------
@@ -461,6 +494,29 @@
 # disco, mucho más lento. Para evitar posibles pérdidas de datos, se puede
 # obligar al kernel a que guarde estos buffers en el disco duro:
 #     sync
+#
+# Mostrar información sobre un comando:
+#     type <comando>
+
+#     Ejemplos:
+#         type mv:
+#         => mv is hashed (/bin/mv)
+
+#         type ls:
+#         => ls is aliased to `ls --color=auto'
+
+#         type source:
+#         => source is a shell builtin
+
+#         type .:
+#         => . is a shell builtin
+
+#         type cd:
+#         => cd is a function
+#            cd ()
+#            {
+#                __zsh_like_cd cd "$@"
+#            }
 #
 #
 # Procesos
