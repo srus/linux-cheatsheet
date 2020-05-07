@@ -1,12 +1,22 @@
-# =============================================================================
-#                     Comandos útiles y notas sobre Linux
-#
-# Nota: Todos los comandos de este documento sólo se han probado en Bash
-# =============================================================================
+# ==============================================================================
+#                          Notas sobre Linux y Bash
+# ==============================================================================
 #
 #
-# Notas sobre Bash [3]
-# ================
+# Bash [1]
+# ====
+#
+# Algunas variables internas
+# --------------------------
+#
+# - $0: Nombre del script o de la shell.
+# - $$: PID del script o de la shell.
+# - $BASHPID: PID de la instancia de Bash. En una subshell $$ y $BASHPID son
+# -           distintos. En otro caso son iguales.
+# - $BASH_SUBSHELL: Indica si la instancia es una subshell.
+# - $1, $2, ...: Acceso por posición a los argumentos del script.
+# - $_: Último argumento recibido en el comando anterior.
+# - $?: Estado de salida del comando anterior.
 #
 # Variables y cadenas de caracteres
 # ---------------------------------
@@ -83,14 +93,6 @@
 #           echo "${x[@]}"
 #           => hello world
 #
-#       Otros usos:
-#           $0: Nombre del script o de la shell.
-#           $1, $2, ...: Acceso por posición a los argumentos del script.
-#           $_: Último argumento recibido en el comando anterior.
-#           $$: PID de la shell.
-#           $BASHPID: PID de la subshell.
-#           $?: Estado de salida del comando anterior.
-#
 # - Las comillas simples y dobles no son equivalentes. Con comillas dobles
 #   algunos caracteres se interpretan como caracteres especiales:
 #       $, `, {, }, +, (, ).
@@ -164,10 +166,10 @@
 #
 #
 #   El comando `source` sólo está disponible en Bash y es un alias de `.`, que
-#   es un comando POSIX disponible en varias shells. Sirve para ejecutar un
-#   script en el entorno de la shell, de forma que las variables creadas o
-#   modificadas en el script siguen disponibles en la shell cuando el script
-#   termina de ejecutarse.
+#   es un comando POSIX disponible en sh. Sirve para ejecutar un script en el
+#   entorno de la shell, de forma que las variables creadas o modificadas en
+#   el script siguen disponibles en la shell cuando el script termina de
+#   ejecutarse.
 #
 # Ejecución de comandos
 # ---------------------
@@ -176,22 +178,22 @@
 #   por ejemplo que devuelvan una salida única:
 #
 #       - Si la agrupación se hace con paréntesis, los comandos se ejecutan en
-#         una subshell (proceso hijo):
+#         una subshell:
 #
-#             (echo "$$"; echo "$BASHPID")
+#             (echo $$ ; echo $BASHPID ; echo $BASH_SUBSHELL)
 #             =>
 #             16200
 #             22352
-#
-#         Nota: Bash también ejecuta los scripts en una subshell.
+#             1
 #
 #       - Si la agrupación se hace con llaves, los comandos se ejecutan en el
 #         mismo contexto (mismo proceso que la shell):
 #
-#             { echo "$$"; echo "$BASHPID"; }
+#             { echo $$ ; echo $BASHPID ; echo $BASH_SUBSHELL ; }
 #             =>
 #             16200
 #             16200
+#             0
 #
 #         Nota: Al usar llaves es obligatorio escribir ';' al final de la lista
 #         de comandos y separar las llaves con espacios.
@@ -208,11 +210,11 @@
 #
 #       <comand> || { echo "error"; exit 1; }
 #
-#   Otra opción muy usada es `-o pipefail`, para devolver siempre un valor
-#   distinto de 0 si falla algún comando en una tubería (cmd1 | cmd2 | cmd3).
+#   Otra opción muy usada es `set -o pipefail`, para devolver siempre un valor
+#   distinto de 0 si falla algún comando usando tuberías. [4]
 #
 #
-# Redireccionamiento de entrada/salida [1]
+# Redireccionamiento de entrada/salida [3]
 # ------------------------------------
 #
 # - Por defecto existen tres archivos abiertos siempre disponibles:
@@ -1357,6 +1359,7 @@
 # Documentación de referencia
 # ===========================
 #
-# [1] http://www.tldp.org/LDP/abs/html/io-redirection.html
-# [2] http://www.tldp.org/LDP/abs/html/subshells.html
-# [3] http://www.tldp.org/LDP/abs/html/index.html
+# [1] https://www.gnu.org/software/bash/manual/html_node/index.html
+# [2] https://www.gnu.org/software/bash/manual/html_node/Command-Grouping.html
+# [3] https://www.gnu.org/software/bash/manual/html_node/Redirections.html
+# [4] https://vaneyckt.io/posts/safer_bash_scripts_with_set_euxo_pipefail/
