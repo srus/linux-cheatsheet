@@ -9,14 +9,14 @@
 # Algunas variables internas
 # --------------------------
 #
-# - $0: Nombre del script o de la shell.
-# - $$: PID del script o de la shell.
-# - $BASHPID: PID de la instancia de Bash. En una subshell $$ y $BASHPID son
-# -           distintos. En otro caso son iguales.
+# - $0:             Nombre del script o de la shell.
+# - $$:             PID del script o de la shell.
+# - $BASHPID:       PID de la instancia de Bash. Si es un proceso hijo $$ y
+#                   $BASHPID son distintos, siendo $$ el PID del padre.
 # - $BASH_SUBSHELL: Indica si la instancia es una subshell.
-# - $1, $2, ...: Acceso por posición a los argumentos del script.
-# - $_: Último argumento recibido en el comando anterior.
-# - $?: Estado de salida del comando anterior.
+# - $1, $2, ...:    Acceso por posición a los argumentos del script.
+# - $_:             Último argumento recibido en el comando anterior.
+# - $?:             Estado de salida del comando anterior.
 #
 # Variables y cadenas de caracteres
 # ---------------------------------
@@ -180,10 +180,14 @@
 #       - Si la agrupación se hace con paréntesis, los comandos se ejecutan en
 #         una subshell:
 #
+#             (echo $$ $BASHPID $BASH_SUBSHELL)
+#             =>
+#             1200 5123 1
+#
 #             (echo $$ ; echo $BASHPID ; echo $BASH_SUBSHELL)
 #             =>
-#             16200
-#             22352
+#             1200
+#             6267
 #             1
 #
 #       - Si la agrupación se hace con llaves, los comandos se ejecutan en el
@@ -191,8 +195,8 @@
 #
 #             { echo $$ ; echo $BASHPID ; echo $BASH_SUBSHELL ; }
 #             =>
-#             16200
-#             16200
+#             1200
+#             1200
 #             0
 #
 #         Nota: Al usar llaves es obligatorio escribir ';' al final de la lista
@@ -930,11 +934,23 @@
 #
 #     Ejemplo: zgrep 'foobar' /path/to/folder/log*.gz
 #
-# Mostrar el contenido de un archivo conforme se va modificando:
-#     tail -f <path>
+# Numerar las líneas de un archivo:
+#     cat -n <file>
 #
-# Mostrar las últimas 20 líneas de un archivo:
-#     tail -n 20 <path>
+# Mostrar las primeras N líneas de un archivo:
+#     head -n N <file>
+#
+# Mostrar todas las líneas de un archivo excepto las N últimas:
+#     head -n -N <file>
+#
+# Mostrar las últimas N líneas de un archivo:
+#     tail -n N <file>
+#
+# Mostrar todas las líneas de un archivo excepto las N primeras:
+#     tail -n +N <file>
+#
+# Mostrar el contenido de un archivo conforme se va modificando:
+#     tail -f <file>
 #
 # Buscar expresion regular en un archivo abierto con less (también sirve en
 # man, ya que está basado en less):
