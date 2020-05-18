@@ -820,23 +820,38 @@
 #     Con la opción `-type d` busca sólo directorios:
 #         find <path> -type d -iname '<pattern>'
 #
+#     Con la opción `-mtime` busca según la fecha de modificación:
+#         find <path> -mtime [+]<num_days>
+#
+#         Buscar archivos modificados hace 5 días:
+#             find <path> -mtime 5
+#
+#         Buscar archivos modificados en los últimos 5 días:
+#             find <path> -mtime +5
+#
+#     El comando `find` se puede combinar con `exec` para ejecutar comandos
+#     sobre los archivos encontrados:
+#         find <path> -exec <command> '{}' ';'
+#
 #     Buscar por propietario y grupo:
 #         find <path> -user '<user_name>'
 #         find <path> -group '<group_name>'
 #
 #     Buscar enlaces duros:
 #         find <path> -type f -links <n>
-#     donde <n> puede ser:
-#         n: exactamente n links,
-#         +n: más de n links,
-#         -n: menos de n links.
 #
-#     Buscar y eliminar archivos:
+#         donde <n> puede ser:
+#             n: exactamente n links
+#             +n: más de n links
+#             -n: menos de n links
+#
+#     Buscar archivos modificados en los últimos 100 días y eliminarlos:
+#         find <path> -type f -mtime +100 -exec rm '{}' ';'
+#
+#     Otra forma de buscar y eliminar archivos es con la opción `-delete`. ¡OJO!
+#     hay que ponerla siempre al final! ¡Si se pusiera al principio iría
+#     eliminando TODOS los archivos y directorios que fuera encontrando!
 #         find <path> -type f -iname '<pattern>' -delete
-#     Nota importante:
-#     ¡La opción `-delete` hay que ponerla siempre al final! ¡Si se pusiera al
-#     principio iría eliminando TODOS los archivos y directorios que fuera
-#     encontrando!
 #
 #     Con la opción `-print0` se cambia en la salida el carácter "salto de
 #     línea" (\n) por el carácter "null" (\0). Ojo, esta opción se añade
