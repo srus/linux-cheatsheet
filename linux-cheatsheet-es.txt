@@ -468,14 +468,21 @@
 #    Con systemd:
 #        systemctl [--user] status <service_name>
 #
-# Mostrar el estado de los servicios del sistema:
+# Mostrar el estado de todos los servicios del sistema:
 #     service --status-all
 #
-# Activar un servicio del sistema:
+# Iniciar un servicio del sistema:
 #     sudo service <service_name> start
 #
-# Desactivar un servicio del sistema:
+#     Con systemd:
+#         systemctl [--user] start <service_name>
+#
+# Parar un servicio del sistema:
 #     sudo service <service_name> stop
+#
+#     Con systemd:
+#         systemctl [--user] stop <service_name>
+#
 #
 # Activar un servicio del sistema en el arranque:
 #     sudo update-rc.d <service_name> defaults
