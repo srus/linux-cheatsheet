@@ -462,24 +462,32 @@
 #     O bien:
 #         <ALT> + <CTRL> + retroceso
 #
+# Mostrar el estado de un servicio del sistema:
+#     service <service_name> status
+#
+#    Con systemd:
+#        systemctl [--user] status <service_name>
+#
 # Mostrar el estado de los servicios del sistema:
 #     service --status-all
 #
-# Activar un servicio:
-#     sudo service <daemon_name> start
+# Activar un servicio del sistema:
+#     sudo service <service_name> start
 #
-# Desactivar un servicio:
-#     sudo service <daemon_name> stop
+# Desactivar un servicio del sistema:
+#     sudo service <service_name> stop
 #
-# Instalar un servicio en el arranque:
-#     sudo update-rc.d <daemon_name> defaults
+# Activar un servicio del sistema en el arranque:
+#     sudo update-rc.d <service_name> defaults
 #
-# Desinstalar un servicio del arranque:
-#     sudo update-rc.d -f <daemon_name> remove
+#     Con systemd:
+#         systemctl [--user] enable <service_name>
 #
-# Interfaces gráficas para gestionar servicios del sistema:
-#     bum (gtk)
-#     rcconf (shell)
+# Desactivar un servicio del sistema en el arranque:
+#     sudo update-rc.d <service_name> disable
+#
+#     Con systemd:
+#         systemctl [--user] disable <service_name>
 #
 # Comprobar sectores defectuosos en un disco en modo no-destructivo:
 #     badblocks -nsv /dev/<device>
@@ -1014,9 +1022,9 @@
 # Filtrar columnas de un texto tabulado usando un delimitador específico:
 #     cut -d <delimiter> -f <columns_range> <file>
 #
-#     Ejemplo:
+#     Ejemplos:
 #
-#     Mostrar columanas desde la segunda en adelante:
+#     Mostrar columnas desde la segunda en adelante:
 #         cut -d ' ' -f 2- <file>
 #
 #     Mostrar sólo la primera columna:
@@ -1176,6 +1184,9 @@
 # Mostrar qué servicio está escuchando en un puerto:
 #     lsof -i :<port>
 #
+# Comprobar puertos abiertos y servicios en ejecución de un servidor:
+#     nmap -A -T4 <server>
+#
 # Comprobar intentos de entrada denegados por DenyHosts:
 #     cat /etc/hosts.deny
 #
@@ -1204,16 +1215,24 @@
 # Nota: es necesario instalar el paquete "traceroute".
 #
 # Consultar a los servidores DNS información sobre un dominio:
-#     dig <URL>
+#     dig [@<dns_server>] <domain>
+#
+#     Ejemplos:
+#
+#     Consultar al servidor de dominios 8.8.4.4 información sobre google.com:
+#         dig @8.8.4.4 google.com
+#
+#     Consultar al servidor DNS por defecto (localizado en /etc/resolv.conf):
+#         dig google.com
 #
 # Mostrar la traza para resolver un dominio:
-#     dig +trace <URL>
+#     dig +trace <domain>
 #
 # Consultar a los servidores DNS el dominio asociado a una IP:
 #     dig -x <IP>
 #
 # Otra herramienta para consultar información de servidores DNS:
-#     host [-d] <URL | IP>
+#     host [-d] <domain | IP>
 #
 #     Con el parámetro opcional '-d' muestra más información.
 #
@@ -1387,7 +1406,10 @@
 #         tail -f access.log | stdbuf -oL cut -d ' ' -f1 | uniq
 #
 # Visualizar un archivo JSON formateado:
-#     cat <filename.json> | json_pp | less
+#     cat data.json | jq
+#
+#     Otra alternativa:
+#         cat data.json | json_pp
 #
 #
 # Documentación de referencia
