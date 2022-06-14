@@ -995,17 +995,47 @@
 #     Con la opción `-i` se escribe en los archivos de entrada. Por defecto se
 #     escribe en la salida estándar.
 #
+#     Nota: El programa sed está disponible en diferentes versiones (GNU/Linux,
+#     UNIX/MacOS) y no son equivalentes: algunos parámetros no están disponibles
+#     o tienen distinto significado. Una de las alternativas a sed es Perl.
+#
 #     Ejemplos:
 #
-#      Sustituir todas las ocurrencias de "my_path" por el resultado de `pwd`
-#      en todos los archivos con extensión ".txt" de un directorio:
-#          p="`pwd`"
-#          p="${p//\//\\/}"  # escapa todas las barras
-#          sed -i "s/my_path/$p/g" *.txt
+#         Sustituir la primera ocurrencia de "bar" por "cow":
+#             echo "foo bar zoo bar" | sed "s/bar/cow/"
+#             =>
+#             foo cow zoo bar
 #
-#      Escapar espacios en blanco de un archivo con nombres de directorios y
-#      crear dichos directorios:
-#          sed "s/\ /\\\ /g" dirs.txt | xargs -I % mkdir "%"
+#             Con Perl:
+#                 perl -p -e "s/bar/cow/"
+#                 =>
+#                 foo cow zoo bar
+#
+#         Sustituir todas las ocurrencias de "bar" por "cow":
+#             echo "foo bar zoo bar" | sed "s/bar/cow/g"
+#             =>
+#             foo cow zoo cow
+#
+#             Con Perl:
+#                 perl -p -e "s/bar/cow/g"
+#                 =>
+#                 foo cow zoo cow
+#
+#         Ejemplo anterior pero usando un archivo:
+#             sed -i "s/bar/cow/g" myfile.txt
+#
+#             Con Perl:
+#                 perl -i -p -e "s/bar/cow/g" myfile.txt
+#
+#         Sustituir todas las ocurrencias de "my_path" por el resultado de `pwd`
+#         en todos los archivos con extensión ".txt" de un directorio:
+#             p="`pwd`"
+#             p="${p//\//\\/}"  # escapa todas las barras
+#             sed -i "s/my_path/$p/g" *.txt
+#
+#         Escapar espacios en blanco de un archivo con nombres de directorios y
+#         crear dichos directorios:
+#             sed "s/\ /\\\ /g" dirs.txt | xargs -I % mkdir "%"
 #
 # Sustituir todas las ocurrencias de "my_path" por el resultado de `pwd`
 # recursivamente (-R) en todos los archivos con extensión ".txt" (-x) de un
