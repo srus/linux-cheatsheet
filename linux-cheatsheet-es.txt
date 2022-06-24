@@ -1285,9 +1285,12 @@
 # Capturar tráfico de paquetes TCP:
 #     sudo tcpdump -A -vvvv -s 9999 -i <interface> port <port> > tcp.log
 #
+# Listar todas las reglas de iptables:
+#     sudo iptables -L [chain]
 #
-# Listar reglas de la cadena INPUT de iptables:
-#     sudo iptables -S INPUT
+#     Ejemplo:
+#         Listar las reglas de la cadena INPUT:
+#             sudo iptables -L INPUT
 #
 #
 # Instalación/desinstalación/compilación/vinculación de programas
