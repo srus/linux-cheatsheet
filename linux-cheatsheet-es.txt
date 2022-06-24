@@ -1292,6 +1292,26 @@
 #         Listar las reglas de la cadena INPUT:
 #             sudo iptables -L INPUT
 #
+# Permitir el tráfico entrante:
+#     sudo iptables -A INPUT [-p <protocol>] [--dport <dest_port>] -j ACCEPT
+#
+#     Ejemplo (permitir tráfico TCP en el puerto por defecto de SSH):
+#         sudo iptables -A INPUT -p tcp --dport ssh -j ACCEPT
+#
+#     Ejemplo (permitir tráfico TCP en el puerto 80):
+#         sudo iptables -A INPUT -p tcp --dport 80 -j ACCEPT
+#
+# Bloquear (sin responder al emisor) el tráfico entrante:
+#     sudo iptables -A INPUT [-p <protocol>] [--dport <dest_port>] -j DROP
+#
+#     Ejemplo (bloquear todo el tráfico entrante):
+#         sudo iptables -A INPUT -j DROP
+#
+#         Nota:
+#         En iptables las reglas que se añadieron antes tienen preferencia sobre
+#         las posteriores, por lo tanto esta regla habría que añadirla siempre
+#         en último lugar.
+#
 #
 # Instalación/desinstalación/compilación/vinculación de programas
 # ===============================================================
