@@ -1278,7 +1278,7 @@
 #             sudo iptables -L INPUT
 #
 # Permitir el tráfico entrante en la cadena INPUT:
-#     sudo iptables -A INPUT [-p <protocol>] [--dport <dest_port>] [-i <interface>] -j ACCEPT
+#     sudo iptables -A INPUT [-s IP] [-p <protocol>] [--dport <dest_port>] [-i <interface>] -j ACCEPT
 #
 #     Ejemplo (permitir tráfico TCP en el puerto por defecto de SSH):
 #         sudo iptables -A INPUT -p tcp --dport ssh -j ACCEPT
@@ -1287,14 +1287,19 @@
 #         sudo iptables -A INPUT -p tcp --dport 80 -j ACCEPT
 #
 # Bloquear (sin responder al emisor) el tráfico entrante en la cadena INPUT:
-#     sudo iptables -A INPUT [-p <protocol>] [--dport <dest_port>] [-i <interface>] -j DROP
-#
-#     Ejemplo (bloquear todo el tráfico entrante):
-#         sudo iptables -A INPUT -j DROP
+#     sudo iptables -A INPUT [-s IP] [-p <protocol>] [--dport <dest_port>] [-i <interface>] -j DROP
 #
 #     Nota:
 #     En iptables las reglas están ordenadas por orden de inserción y las que se
 #     añadieron antes tienen preferencia sobre las posteriores.
+#
+#     Ejemplo (bloquear todo el tráfico entrante):
+#         sudo iptables -A INPUT -j DROP
+#
+#     Ejemplo (bloquear tráfico en las cadenas INPUT y FORWARD para una
+#     determinada IP origen):
+#         sudo iptables -A INPUT -s <IP> -j DROP
+#         sudo iptables -A FORWARD -s <IP> -j DROP
 #
 # Insertar una regla en una posición determinada en la cadena INPUT:
 #     sudo iptables -I INPUT <position> [-p <protocol>] [--dport <dest_port>] [-i <interface>] -j <target>
