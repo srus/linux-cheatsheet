@@ -1365,11 +1365,27 @@
 # Mostrar todos los enlaces dinámicos del sistema:
 #     ldconfig -v | less
 #
+# Instalación de paquetes
+# -----------------------
+#
 # Instalar un paquete Debian:
 #     dpkg -i <package>
 #
 # Instalar un paquete RPM:
 #     rpm -Uvh <package>
+#
+# Instalar un paquete con apt:
+#     apt install <package>
+#
+# Instalar un paquete con aptitude:
+#     aptitude install <package>
+#
+# Comprobar con aptitude si un paquete está instalado:
+#     aptitude show <package>
+#
+# Comprobar con apt-cache si un paquete está instalado y qué versiones hay
+# disponibles:
+#     apt-cache policy <package>
 #
 # Instalar dependencias de paquetes rotos:
 #     sudo aptitude install -f
