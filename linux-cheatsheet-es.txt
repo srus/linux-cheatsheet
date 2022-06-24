@@ -1229,24 +1229,6 @@
 #
 #     Es necesario instalar el paquete "denyhosts".
 #
-# Activar cortafuegos:
-#     sudo ufw enable
-#
-# Desactivar cortafuegos:
-#     sudo ufw disable
-#
-# Ver estado del cortafuegos:
-#     sudo ufw status verbose
-#
-# Cambiar la políticas por defecto del cortafuegos para permitir todas las
-# conexiones entrantes (por defecto se permiten sólo conexiones salientes):
-#     sudo ufw default allow incoming
-#
-# Limitar en el cortafuegos el número de intentos de entrada fallidos vía SSH.
-# Esto rechaza cualquier IP que realice >= 6 intentos de entrada fallidos en
-# los últimos 30 s:
-#      sudo ufw limit ssh
-#
 # Mostrar la ruta que sigue un paquete por la red hasta llegar a un servidor:
 #     traceroute <hostname>
 # Nota: es necesario instalar el paquete "traceroute".
@@ -1285,15 +1267,18 @@
 # Capturar tráfico de paquetes TCP:
 #     sudo tcpdump -A -vvvv -s 9999 -i <interface> port <port> > tcp.log
 #
-# Listar todas las reglas de iptables:
+# Cortafuegos (iptables)
+# ----------------------
+#
+# Listar todas las reglas:
 #     sudo iptables -L [chain]
 #
 #     Ejemplo:
 #         Listar las reglas de la cadena INPUT:
 #             sudo iptables -L INPUT
 #
-# Permitir el tráfico entrante:
-#     sudo iptables -A INPUT [-p <protocol>] [--dport <dest_port>] -j ACCEPT
+# Permitir el tráfico entrante en la cadena INPUT:
+#     sudo iptables -A INPUT [-p <protocol>] [--dport <dest_port>] [-i <interface>] -j ACCEPT
 #
 #     Ejemplo (permitir tráfico TCP en el puerto por defecto de SSH):
 #         sudo iptables -A INPUT -p tcp --dport ssh -j ACCEPT
@@ -1301,16 +1286,50 @@
 #     Ejemplo (permitir tráfico TCP en el puerto 80):
 #         sudo iptables -A INPUT -p tcp --dport 80 -j ACCEPT
 #
-# Bloquear (sin responder al emisor) el tráfico entrante:
-#     sudo iptables -A INPUT [-p <protocol>] [--dport <dest_port>] -j DROP
+# Bloquear (sin responder al emisor) el tráfico entrante en la cadena INPUT:
+#     sudo iptables -A INPUT [-p <protocol>] [--dport <dest_port>] [-i <interface>] -j DROP
 #
 #     Ejemplo (bloquear todo el tráfico entrante):
 #         sudo iptables -A INPUT -j DROP
 #
-#         Nota:
-#         En iptables las reglas que se añadieron antes tienen preferencia sobre
-#         las posteriores, por lo tanto esta regla habría que añadirla siempre
-#         en último lugar.
+#     Nota:
+#     En iptables las reglas están ordenadas por orden de inserción y las que se
+#     añadieron antes tienen preferencia sobre las posteriores.
+#
+# Insertar una regla en una posición determinada en la cadena INPUT:
+#     sudo iptables -I INPUT <position> [-p <protocol>] [--dport <dest_port>] [-i <interface>] -j <target>
+#
+#     Ejemplo (insertar en primera posición una regla para permitir tráfico
+#     entrante en la interfaz loopback. De esta manera nos aseguramos que no
+#     podemos bloquear posteriormente esta interfaz fundamental para el correcto
+#     funcionamiento de muchos programas):
+#         sudo iptables -I INPUT 1 -i lo -j ACCEPT
+#
+# Eliminar todas las reglas de iptables (restableciendo primero la política por
+# defecto de las tres cadenas principales):
+#     sudo iptables -P INPUT ACCEPT
+#     sudo iptables -P OUTPUT ACCEPT
+#     sudo iptables -P FORWARD ACCEPT
+#     sudo iptables -F
+#
+# Activar ufw (interfaz de iptables):
+#     sudo ufw enable
+#
+# Desactivar ufw (interfaz de iptables):
+#     sudo ufw disable
+#
+# Ver el estado de ufw (interfaz de iptables):
+#     sudo ufw status verbose
+#
+# Cambiar la política por defecto de ufw (interfaz de iptables) para permitir
+# todas las conexiones entrantes (por defecto se permiten sólo conexiones
+# salientes):
+#     sudo ufw default allow incoming
+#
+# Limitar en ufw (interfaz de iptables) el número de intentos de entrada
+# fallidos vía SSH. Por defecto bloquea cualquier IP que realice >= 6 intentos
+# de entrada fallidos en los últimos 30 s:
+#      sudo ufw limit ssh
 #
 #
 # Instalación/desinstalación/compilación/vinculación de programas
