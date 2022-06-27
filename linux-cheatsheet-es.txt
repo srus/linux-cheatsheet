@@ -325,10 +325,10 @@
 #     nproc
 #
 # Info del hardware:
-#     sudo lshw
+#     lshw
 #
 # Info de la memoria:
-#     sudo dmidecode --type memory
+#     dmidecode --type memory
 #
 # Info de la batería (incluido temperatura)
 #     acpi -V
@@ -346,7 +346,7 @@
 #     df
 #
 # Info de la tarjeta gráfica:
-#     sudo lshw -C video
+#     lshw -C video
 #
 # Info sobre voltajes, temperaturas y velocidad de ventiladores:
 #     sensors
@@ -376,7 +376,7 @@
 #     iwlist <eth_n> scan
 #
 # Apagar la antena wifi:
-#     sudo iwconfig <eth_n> txpower off
+#     iwconfig <eth_n> txpower off
 #
 # Comprobar el rendimiento de la tarjeta gráfica:
 #     glxgears -printfps
@@ -436,19 +436,19 @@
 #     w
 #
 # Convertirse en root modificando el entorno (environment):
-#     sudo -i  # `logout` para dejar de serlo
+#     -i  # `logout` para dejar de serlo
 #
 # Convertirse en root SIN modificar el entorno (environment):
-#     sudo -s  # `logout` para dejar de serlo
+#     -s  # `logout` para dejar de serlo
 #
 # Iniciar sesión como otro usuario.
-#     sudo su <username>
+#     su <username>
 #
 #     Si el usario actual es root, también se puede usar el comando "su":
 #         su <username>
 #
 # Ejecutar un comando como otro usuario:
-#     sudo -u [<username>] <command>
+#     -u [<username>] <command>
 #
 #     Si el usario actual es root, también se puede usar el comando "su":
 #         su -c <command> <username>
@@ -472,26 +472,26 @@
 #     service --status-all
 #
 # Iniciar un servicio del sistema:
-#     sudo service <service_name> start
+#     service <service_name> start
 #
 #     Con systemd:
 #         systemctl [--user] start <service_name>
 #
 # Parar un servicio del sistema:
-#     sudo service <service_name> stop
+#     service <service_name> stop
 #
 #     Con systemd:
 #         systemctl [--user] stop <service_name>
 #
 #
 # Activar un servicio del sistema en el arranque:
-#     sudo update-rc.d <service_name> defaults
+#     update-rc.d <service_name> defaults
 #
 #     Con systemd:
 #         systemctl [--user] enable <service_name>
 #
 # Desactivar un servicio del sistema en el arranque:
-#     sudo update-rc.d <service_name> disable
+#     update-rc.d <service_name> disable
 #
 #     Con systemd:
 #         systemctl [--user] disable <service_name>
@@ -676,19 +676,19 @@
 #     chmod u+x <file>
 #
 # Cambiar los permisos del contenido de un directorio recursivamente:
-#     sudo chmod 755 -R <path>
+#     chmod 755 -R <path>
 #
 # Cambiar el propietario del contenido de un directorio. Con "-R" para hacerlo
 # recursivamente:
-#     sudo chown [-R] <username> <path>
+#     chown [-R] <username> <path>
 #
 # Cambiar el grupo del contenido de un directorio. Con "-R" para hacerlo
 # recursivamente:
-#     sudo chown [-R] :<groupname> <path>
+#     chown [-R] :<groupname> <path>
 #
 # Cambiar el propietario y grupo del contenido de un directorio recursivamente:
 # Con "-R" para hacerlo recursivamente:
-#     sudo chown [-R] <username>:<groupname> <path>
+#     chown [-R] <username>:<groupname> <path>
 #
 # Hacer que un usuario (con permiso de ejecución) herede temporalmente los
 # privilegios del propietario de un archivo ejecutable:
@@ -708,11 +708,11 @@
 #
 #         - Crear el grupo "foobar".
 #         - Cambiar el grupo de dicho archivo de configuración:
-#               sudo chown :foobar <path>/foobar.conf
+#               chown :foobar <path>/foobar.conf
 #         - Cambiar el grupo del ejecutable:
-#               sudo chown :foobar <path>/foobar
+#               chown :foobar <path>/foobar
 #         - Cambiar el bit SGID del ejecutable:
-#               sudo chmod g+s <path>/foobar
+#               chmod g+s <path>/foobar
 #
 #    A partir de ahora cualquier usuario que ejecute "foobar" heredará los
 #    privilegios del grupo "foobar", y con ello podrá acceder a "foobar.conf".
@@ -728,24 +728,24 @@
 #     grep -i '<groupname>' /etc/group
 #
 # Añadir un usuario:
-#     sudo adduser <username>
+#     adduser <username>
 #
 # Añadir un grupo:
-#     sudo groupadd <groupname>
+#     groupadd <groupname>
 #
 # Eliminar un usuario:
-#     sudo deluser <username>
+#     deluser <username>
 #
 # Eliminar un grupo:
-#     sudo delgroup <groupname>
+#     delgroup <groupname>
 #
 # Añadir un usuario a un grupo:
-#    sudo gpasswd -a <username> <groupname>
+#    gpasswd -a <username> <groupname>
 # O bien:
-#    sudo usermod -a -G <groupname> <username>
+#    usermod -a -G <groupname> <username>
 #
 # Permitir que un usuario normal pueda manejar un servicio del sistema:
-#     Abrir el archivo "sudoers" con `sudo visudo` y añadir:
+#     Abrir el archivo "sudoers" con `visudo` y añadir:
 #         <username>        ALL=/etc/init.d/<service_name>
 #
 #
@@ -1265,76 +1265,80 @@
 #         rate-limited-proxy-66-249-90-77.google.com has address 66.249.90.77
 #
 # Capturar tráfico de paquetes TCP:
-#     sudo tcpdump -A -vvvv -s 9999 -i <interface> port <port> > tcp.log
+#     tcpdump -A -vvvv -s 9999 -i <interface> port <port> > tcp.log
 #
 # Cortafuegos (iptables)
 # ----------------------
 #
 # Listar todas las reglas:
-#     sudo iptables -L [chain]
+#     iptables -L -n [chain]
 #
-#     Ejemplo:
+#     Para mostrar las reglas en el formato original, tal y como se añadieron,
+#     se usa el parámetro '-S':
+#         iptables -S [chain]
+#
+#     Ejemplos:
 #         Listar las reglas de la cadena INPUT:
-#             sudo iptables -L INPUT
+#             iptables -L -n INPUT
 #
 # Permitir el tráfico entrante en la cadena INPUT:
-#     sudo iptables -A INPUT [-s IP] [-p <protocol>] [--dport <dest_port>] [-i <interface>] -j ACCEPT
+#     iptables -A INPUT [-s IP] [-p <protocol>] [--dport <dest_port>] [-i <interface>] -j ACCEPT
 #
 #     Ejemplo (permitir tráfico TCP en el puerto por defecto de SSH):
-#         sudo iptables -A INPUT -p tcp --dport ssh -j ACCEPT
+#         iptables -A INPUT -p tcp --dport ssh -j ACCEPT
 #
 #     Ejemplo (permitir tráfico TCP en el puerto 80):
-#         sudo iptables -A INPUT -p tcp --dport 80 -j ACCEPT
+#         iptables -A INPUT -p tcp --dport 80 -j ACCEPT
 #
 # Bloquear (sin responder al emisor) el tráfico entrante en la cadena INPUT:
-#     sudo iptables -A INPUT [-s IP] [-p <protocol>] [--dport <dest_port>] [-i <interface>] -j DROP
+#     iptables -A INPUT [-s IP] [-p <protocol>] [--dport <dest_port>] [-i <interface>] -j DROP
 #
 #     Nota:
 #     En iptables las reglas están ordenadas por orden de inserción y las que se
 #     añadieron antes tienen preferencia sobre las posteriores.
 #
 #     Ejemplo (bloquear todo el tráfico entrante):
-#         sudo iptables -A INPUT -j DROP
+#         iptables -A INPUT -j DROP
 #
 #     Ejemplo (bloquear tráfico en las cadenas INPUT y FORWARD para una
 #     determinada IP origen):
-#         sudo iptables -A INPUT -s <IP> -j DROP
-#         sudo iptables -A FORWARD -s <IP> -j DROP
+#         iptables -A INPUT -s <IP> -j DROP
+#         iptables -A FORWARD -s <IP> -j DROP
 #
 # Insertar una regla en una posición determinada en la cadena INPUT:
-#     sudo iptables -I INPUT <position> [-p <protocol>] [--dport <dest_port>] [-i <interface>] -j <target>
+#     iptables -I INPUT <position> [-p <protocol>] [--dport <dest_port>] [-i <interface>] -j <target>
 #
 #     Ejemplo (insertar en primera posición una regla para permitir tráfico
 #     entrante en la interfaz loopback. De esta manera nos aseguramos que no
 #     podemos bloquear posteriormente esta interfaz fundamental para el correcto
 #     funcionamiento de muchos programas):
-#         sudo iptables -I INPUT 1 -i lo -j ACCEPT
+#         iptables -I INPUT 1 -i lo -j ACCEPT
 #
 # Eliminar todas las reglas de iptables (restableciendo primero la política por
 # defecto de las tres cadenas principales):
-#     sudo iptables -P INPUT ACCEPT
-#     sudo iptables -P OUTPUT ACCEPT
-#     sudo iptables -P FORWARD ACCEPT
-#     sudo iptables -F
+#     iptables -P INPUT ACCEPT
+#     iptables -P OUTPUT ACCEPT
+#     iptables -P FORWARD ACCEPT
+#     iptables -F
 #
 # Activar ufw (interfaz de iptables):
-#     sudo ufw enable
+#     ufw enable
 #
 # Desactivar ufw (interfaz de iptables):
-#     sudo ufw disable
+#     ufw disable
 #
 # Ver el estado de ufw (interfaz de iptables):
-#     sudo ufw status verbose
+#     ufw status verbose
 #
 # Cambiar la política por defecto de ufw (interfaz de iptables) para permitir
 # todas las conexiones entrantes (por defecto se permiten sólo conexiones
 # salientes):
-#     sudo ufw default allow incoming
+#     ufw default allow incoming
 #
 # Limitar en ufw (interfaz de iptables) el número de intentos de entrada
 # fallidos vía SSH. Por defecto bloquea cualquier IP que realice >= 6 intentos
 # de entrada fallidos en los últimos 30 s:
-#      sudo ufw limit ssh
+#      ufw limit ssh
 #
 #
 # Instalación/desinstalación/compilación/vinculación de programas
@@ -1347,7 +1351,7 @@
 #     compilar en una futura instalación.
 #
 # Desinstalar un programa instalado desde código fuente:
-#     ./configure && make && sudo make install
+#     ./configure && make && make install
 #
 #     Hay que abrir el directorio del código fuente desde donde
 #     se instaló y hacer:
@@ -1388,7 +1392,7 @@
 #     apt-cache policy <package>
 #
 # Instalar dependencias de paquetes rotos:
-#     sudo aptitude install -f
+#     aptitude install -f
 #
 #
 # Varios
