@@ -307,7 +307,7 @@
 # Versión del kernel:
 #     uname -a
 #
-# Parámetros de configuración del kernel:
+# Ver parámetros de configuración del kernel:
 #     sysctl -a
 #
 # Info de la distribución:
@@ -368,6 +368,12 @@
 #         `devices/system/cpu/cpu0/cpufreq/scaling_governor=<modo_cpu>`
 #
 #     Nota: Es necesario tener instalado el paquete "sysfsutils".
+#
+# Info sobre comunicación de procesos IPC (memoria compartida, semáforos, etc):
+#     lsipc
+#
+#     O bien:
+#         ipcs -l
 #
 # Info de los dispositivos de red instalados:
 #     iwconfig
