@@ -1194,6 +1194,9 @@
 # Copiar directorio desde local a remoto:
 #     scp -r <origin_dir> <username>@<host>:<destination_dir>
 #
+#     Con rsync (más rápido y seguro):
+#         rsync -vrlpD <origin_dir>/ <username>@<host>:<destination_dir>
+#
 # Descargar archivo desde una URL:
 #     wget <URL>
 #
@@ -1219,7 +1222,10 @@
 # Mostrar conexiones TCP (-t) y UDP (-u) sin resolver los nombres de dominio
 # (-n) de los programas (-p) que están actualmente escuchando (-l). Para
 # refrescar continuamente usar la opción "-c":
-#     netstat -t -u -l -n -p
+#     netstat -t -u -l -n -p [-c]
+#
+#     Otra alternativa es ss:
+#         ss -plunt
 #
 # Mostrar en qué puerto está escuchando un servicio:
 #     netstat -a | grep -i <service>
@@ -1230,10 +1236,13 @@
 # Comprobar puertos abiertos y servicios en ejecución de un servidor:
 #     nmap -A -T4 <server>
 #
-# Comprobar intentos de entrada denegados por DenyHosts:
+# Comprobar intentos de entrada denegados por DenyHosts (es necesario instalar
+# el paquete 'denyhosts'):
 #     cat /etc/hosts.deny
 #
-#     Es necesario instalar el paquete "denyhosts".
+# Comprobar intentos de entrada denegados por Fail2Ban (es necesario instalar
+# el paquete 'fail2ban'):
+#     cat /var/log/fail2ban.log
 #
 # Mostrar la ruta que sigue un paquete por la red hasta llegar a un servidor:
 #     traceroute <hostname>
