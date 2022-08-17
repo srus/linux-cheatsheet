@@ -312,13 +312,17 @@
 #
 # Info de la distribución:
 #     lsb_release -a
-# O bien:
-#     cat /etc/issue
+#
+#     También:
+#         cat /etc/issue
+#
+#     También:
+#         cat /etc/os-release
 #
 # Info de la CPU:
 #     lscpu
 #
-#     O bien:
+#     También:
 #         cat /proc/cpuinfo
 #
 # Mostrar número de núcleos de procesador disponibles:
@@ -372,7 +376,7 @@
 # Info sobre comunicación de procesos IPC (memoria compartida, semáforos, etc):
 #     lsipc
 #
-#     O bien:
+#     También:
 #         ipcs -l
 #
 # Info de los dispositivos de red instalados:
@@ -465,7 +469,7 @@
 # Reiniciar las X (servidor gráfico):
 #     <ALT> + <IMPR. PANTALLA> + K
 #
-#     O bien:
+#     También:
 #         <ALT> + <CTRL> + retroceso
 #
 # Mostrar el estado de un servicio del sistema:
@@ -747,7 +751,7 @@
 #
 # Añadir un usuario a un grupo:
 #    gpasswd -a <username> <groupname>
-# O bien:
+# También:
 #    usermod -a -G <groupname> <username>
 #
 # Permitir que un usuario normal pueda manejar un servicio del sistema:
@@ -770,7 +774,7 @@
 # Ver el contenido de un directorio:
 #     ls <path>
 #
-#     O bien: l <path>
+#     También: l <path>
 #
 #     Nota:
 #     Con `l` los directorios, binarios y enlaces se muestran en otro formato.
@@ -787,7 +791,7 @@
 # ocultos):
 #     ls -la <path>
 #
-#     O bien: ll <path>
+#     También: ll <path>
 #
 #     Nota:
 #     Con `ll` los directorios, binarios y enlaces se muestran en otro formato.
