@@ -297,6 +297,21 @@
 #
 #                 >&j
 #
+# - Existe una forma especial de redireccionamiento para pasarle un bloque de
+#   texto de varias líneas a un comando por la entrada estándar:
+#
+#     <command> <<LimitString
+#     line 1
+#     line 2
+#     ...
+#     LimitString
+#
+#     Ejemplo:
+#         cat > /tmp/bar.log <<foo
+#         bla 1
+#         bla 2
+#         bla 3
+#         foo
 #
 # Información y configuración del sistema
 # =======================================
