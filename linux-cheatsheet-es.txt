@@ -306,11 +306,18 @@
 #     ...
 #     LimitString
 #
-#     Ejemplo:
+#     Ejemplo 1:
 #         cat > /tmp/bar.log <<foo
 #         bla 1
 #         bla 2
 #         bla 3
+#         foo
+#
+#     Ejemplo 2:
+#         tee /tmp/zoo.log > /dev/null <<foo
+#         moo 1
+#         moo 2
+#         moo 3
 #         foo
 #
 # Información y configuración del sistema
