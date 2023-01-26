@@ -1021,6 +1021,9 @@
 #     A continuación pulsar `n` para saltar a la siguiente ocurrencia o
 #     `shift + n` para saltar hacia atrás.
 #
+#     Para buscar ignorando mayúscula/minúscula hay que usar la opción `-i`:
+#         less -i <file>
+#
 # Transformar/filtrar texto desde archivos o desde la entrada estándar:
 #     sed [-i] "<pattern>" <files>
 #
