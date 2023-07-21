@@ -381,19 +381,23 @@
 #     ulimit -a
 #
 # Mostrar los modos de rendimiento disponibles del procesador:
-#     cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_governors
+#     cat /sys/devices/system/cpu/cpu*/cpufreq/scaling_available_governors
 #
 # Mostrar el modo actual de rendimiento del procesador:
-#     cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+#     cat /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
 #
-#     Para cambiar el modo del procesador de forma permanente hay que modificar
-#     el archivo:
-#         `/etc/sysfs.conf`
+# Cambiar el modo actual de rendimiento del procesador:
+#     cpupower -c all frequency-set -g performance
 #
-#     Y añadir la línea:
-#         `devices/system/cpu/cpu0/cpufreq/scaling_governor=<modo_cpu>`
+#     Nota: Para cambiar el modo de forma permanente:
+#         - Deshabilitar el servicio ondemand:
+#               systemctl disable ondemand.service
+#         - Crear un nuevo servicio systemd para activar el modo en el arranque
+#           con cpupower siguiendo las instrucciones de esta web:
+#               https://sleeplessbeastie.eu/2015/11/09/how-to-set-cpu-governor-at-boot/
 #
-#     Nota: Es necesario tener instalado el paquete "sysfsutils".
+# Mostrar información detallada sobre las frecuencias del procesador:
+#     cpupower -c all frequency-info
 #
 # Info sobre comunicación de procesos IPC (memoria compartida, semáforos, etc):
 #     lsipc
@@ -468,19 +472,19 @@
 #     w
 #
 # Convertirse en root modificando el entorno (environment):
-#     -i  # `logout` para dejar de serlo
+#     sudo -i  # `logout` para dejar de serlo
 #
 # Convertirse en root SIN modificar el entorno (environment):
-#     -s  # `logout` para dejar de serlo
+#     sudo -s  # `logout` para dejar de serlo
 #
-# Iniciar sesión como otro usuario.
-#     su <username>
+# Iniciar sesión como otro usuario:
+#     sudo su [-l] <username>
 #
 #     Si el usario actual es root, también se puede usar el comando "su":
-#         su <username>
+#         su [-l] <username>
 #
 # Ejecutar un comando como otro usuario:
-#     -u [<username>] <command>
+#     sudo -u [<username>] <command>
 #
 #     Si el usario actual es root, también se puede usar el comando "su":
 #         su -c <command> <username>
@@ -691,7 +695,10 @@
 #     Si se requieren más comandos, es necesario ejecutar el script desde un
 #     archivo o desde una cadena de caracteres con la opción `-c` de Bash:
 #
-#         <command> | xargs bash -c '<script_body>'
+#         <command> | xargs bash -c "<script_body>"
+#
+#         Ejemplo:
+#             cat urls.txt | xargs -I {} -P 0 bash -c "curl {}"
 #
 # Copiar la entrada estándar en archivos y en la salida estándar al mismo
 # tiempo. Útil para guardar una copia en disco de la salida de un comando:
@@ -760,7 +767,7 @@
 #     grep -i '<groupname>' /etc/group
 #
 # Añadir un usuario:
-#     adduser <username>
+#     adduser [--group] [--system] [--disabled-password] <username>
 #
 # Añadir un grupo:
 #     groupadd <groupname>
@@ -794,7 +801,7 @@
 #     basename "`pwd`"
 #
 # Ver el contenido de un directorio:
-#     ls <path>
+#     ls [-1] <path>
 #
 #     También: l <path>
 #
@@ -905,10 +912,10 @@
 #     siempre al final.
 #
 # Comprimir en gzip:
-#     gzip -c <in_file> > <out_file>
+#     gzip [--keep] [--force] <file>
 #
 # Descomprimir gzip:
-#     gunzip -c <in_file> > <out_file>
+#     gunzip [--keep] <file>
 #
 # Comprimir en zip:
 #     zip -r <zip_name> <file_or_directory>
