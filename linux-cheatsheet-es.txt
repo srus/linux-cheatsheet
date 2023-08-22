@@ -480,13 +480,13 @@
 # Iniciar sesión como otro usuario:
 #     sudo su [-l] <username>
 #
-#     Si el usario actual es root, también se puede usar el comando "su":
+#     Si el usuario actual es root, también se puede usar el comando "su":
 #         su [-l] <username>
 #
 # Ejecutar un comando como otro usuario:
 #     sudo -u [<username>] <command>
 #
-#     Si el usario actual es root, también se puede usar el comando "su":
+#     Si el usuario actual es root, también se puede usar el comando "su":
 #         su -c <command> <username>
 #
 # Forzar reinicio de Linux (para casos extremos):
