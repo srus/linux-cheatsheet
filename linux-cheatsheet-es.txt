@@ -363,13 +363,28 @@
 #     lspci
 #
 # Info de memoria ocupada:
-#     free -mt
+#     free -ht
 #
 # Info de memoria ocupada (en detalle):
 #     cat /proc/meminfo
 #
 # Info sobre dispositivos y espacio ocupado en el sistema de archivos:
-#     df
+#     df -h
+#
+# Info sobre dispositivos de almacenamiento (particiones, RAID, etc):
+#     lsblk
+#
+#     También:
+#         fdisk -l
+#
+# Info sobre la partición swap:
+#     swapon --show
+#
+# Desconectar particiones swap:
+#     swapoff -a
+#
+# Conectar particiones swap:
+#     swapoff -a
 #
 # Info de la tarjeta gráfica:
 #     lshw -C video
