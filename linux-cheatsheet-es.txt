@@ -353,8 +353,14 @@
 # Info del hardware:
 #     lshw
 #
+# Info de dispositivos USB:
+#     lsusb
+#
 # Info de la memoria:
 #     dmidecode --type memory
+#
+# Info del kernel:
+#     dmesg
 #
 # Info de la batería (incluido temperatura)
 #     acpi -V
@@ -434,6 +440,12 @@
 #
 # Configuración del color (RGB):
 #     xgamma
+#
+# Cambiar el hostname:
+#     hostname <hostname>
+#
+#     Para hacer el cambio permanente hay que editar el siguiente archivo:
+#         /etc/hostname
 #
 #
 # Administración del sistema
@@ -783,6 +795,9 @@
 #
 # Añadir un usuario:
 #     adduser [--group] [--system] [--disabled-password] <username>
+#
+# Cambiar contraseña:
+#     passwd [<username>]
 #
 # Añadir un grupo:
 #     groupadd <groupname>
